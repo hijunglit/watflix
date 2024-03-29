@@ -1,6 +1,6 @@
 import {
     createBrowserRouter,
-    RouterProvider,
+    createRoutesFromElements,
     Route,
     Link,
   } from "react-router-dom";
@@ -17,5 +17,4 @@ const router = createBrowserRouter([
       element: <Coin />,
     }
   ])
-
 export default router;
