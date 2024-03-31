@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Statement } from "typescript";
 
+const Loading = styled.h1``;
 const Container = styled.div`
   padding: 0px 20px;
   max-width: 500px;
@@ -18,7 +19,27 @@ const Title = styled.h1`
     font-size: 48px;
     color: ${props => props.theme.textColor}
 `;
-const Loading = styled.h1``;
+const Overview = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 20px;
+  border-radius: 10px;
+`;
+const OverviewItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  span:first-child {
+    font-size: 10px;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+`;
+const description = styled.p`
+  margin: 20px 0px;
+`;
 
 interface InfoData {
   id: string;
@@ -89,15 +110,45 @@ function Coin() {
         setPrice(priceData);
         setLoading(false)
       })()
-    }, []);
-    console.log(info);
-    console.log(price);
+    }, [coinId]);
     return (
         <Container>
             <Header>
                 <Title>{state?.name || "Loading..."}</Title>
             </Header>
-            {loading ? <Loading>Loading...</Loading> : null}
+            {loading ? <Loading>Loading...</Loading> : (
+              <>
+              <Overview>
+                <OverviewItem>
+                  <p>rank:</p>
+                  <p>{info?.rank}</p>
+                </OverviewItem>
+                <OverviewItem>
+                  <p>symbol:</p>
+                  <p>{info?.symbol}</p>
+                </OverviewItem>
+                <OverviewItem>
+                  <p>open source:</p>
+                  <p>{info?.open_source}</p>
+                </OverviewItem>
+              </Overview>
+              <Overview>
+                <OverviewItem>
+                  <span>{info?.description}</span>
+                </OverviewItem>
+              </Overview>
+              <Overview>
+                <OverviewItem>
+                  <p>total supply</p>
+                  <p>{price?.total_supply}</p>
+                </OverviewItem>
+                <OverviewItem>
+                  <p>max supply</p>
+                  <p>{price?.total_supply}</p>
+                </OverviewItem>
+              </Overview>
+              </>
+            )}
         </Container>
     )
 }

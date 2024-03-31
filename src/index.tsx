@@ -56,8 +56,9 @@ const GlobalStyle = createGlobalStyle`
     font-family: "Open Sans", sans-serif;
     background-color: ${(props) => props.theme.backgroundColor};
     color: ${(props) => props.theme.textColor}
+    line-height: 1.2;
   }
-`
+`;
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
