@@ -65,7 +65,6 @@ function Coins() {
             setLoading(false);
         })()
     }, []);
-    // console.log(coins);
     return (
         <Container>
             <Header>
@@ -74,8 +73,8 @@ function Coins() {
                 {loading ? <Loading>Loading...</Loading>: (
                     <CoinList>
                         {coins.map((item) => (
-                            <Coin key={item.name}>
-                                <Link to={item.name} state={{name: item.name}}>
+                            <Coin key={item.id}>
+                                <Link to={item.id} state={{id:item.id, name: item.name}}>
                                     <Img src="https://cryptoicon-api.pages.dev/api/icon/btc" />
                                     {item.name}
                                 </Link>
