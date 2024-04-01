@@ -32,7 +32,7 @@ const GlobalStyle = createGlobalStyle`
   	display: block;
   }
   body {
-  	line-height: 1;
+  	line-height: 1.2;
   }
   ol, ul {
   	list-style: none;
@@ -56,7 +56,9 @@ const GlobalStyle = createGlobalStyle`
     font-family: "Open Sans", sans-serif;
     background-color: ${(props) => props.theme.backgroundColor};
     color: ${(props) => props.theme.textColor}
-    line-height: 1.2;
+  }
+  a {
+    text-decoration: none;
   }
 `;
 

@@ -19,7 +19,7 @@ const Title = styled.h1`
 `;
 const CoinList = styled.ul``;
 const Coin = styled.li`
-  background: #fff;
+  background: #dcdde1;
   color: ${props => props.theme.textColor};
   border-radius: 15px;
   margin-bottom: 10px;

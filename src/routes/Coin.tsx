@@ -1,7 +1,8 @@
-import { useLocation, useParams } from "react-router-dom";
+import { Route, Routes, useLocation, useParams, Link, useMatch } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Statement } from "typescript";
+import Price from "./Price";
+import Chart from "./Chart";
 
 const Loading = styled.h1``;
 const Container = styled.div`
@@ -25,6 +26,7 @@ const Overview = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
   padding: 10px 20px;
   border-radius: 10px;
+  color: #f5f6fa;
 `;
 const OverviewItem = styled.div`
   display: flex;
@@ -37,9 +39,30 @@ const OverviewItem = styled.div`
     margin-bottom: 5px;
   }
 `;
-const description = styled.p`
+const Description = styled.p`
   margin: 20px 0px;
+  color: #f5f6fa;
 `;
+const Tabs = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  margin: 25px 0;
+  gap: 10px;
+  margin-top: 10px;
+`;
+const Tab = styled.span<{isActive: boolean}>`
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 400;
+  border-radius: 10px;
+  padding: 7px 0;
+  background: rgba(0, 0, 0, 0.5);
+  a {
+    display: block;
+    color: ${props => props.isActive ? props.theme.textColor : "#f5f6fa"};
+  }
+`
 
 interface InfoData {
   id: string;
@@ -102,6 +125,8 @@ function Coin() {
     let state = location.state as {name: string};
     const [info, setInfo] = useState<InfoData>();
     const [price, setPrice] = useState<PriceData>();
+    const matchPrice = useMatch("/:coinId/price");
+    const matchChart = useMatch("/:coinId/chart");
     useEffect(() => {
       (async() => {
         const infoData = await(await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
@@ -114,39 +139,47 @@ function Coin() {
     return (
         <Container>
             <Header>
-                <Title>{state?.name || "Loading..."}</Title>
+                <Title>{state?.name ? state.name : loading ? "Loading..." : info?.name}</Title>
             </Header>
             {loading ? <Loading>Loading...</Loading> : (
               <>
               <Overview>
                 <OverviewItem>
-                  <p>rank:</p>
-                  <p>{info?.rank}</p>
+                  <span>rank:</span>
+                  <span>{info?.rank}</span>
                 </OverviewItem>
                 <OverviewItem>
-                  <p>symbol:</p>
-                  <p>{info?.symbol}</p>
+                  <span>symbol:</span>
+                  <span>{info?.symbol}</span>
                 </OverviewItem>
                 <OverviewItem>
-                  <p>open source:</p>
-                  <p>{info?.open_source}</p>
+                  <span>open source:</span>
+                  <span>{info?.open_source? "TRUE" : "FALSE"}</span>
                 </OverviewItem>
               </Overview>
+              <Description>{info?.description}</Description>
               <Overview>
                 <OverviewItem>
-                  <span>{info?.description}</span>
-                </OverviewItem>
-              </Overview>
-              <Overview>
-                <OverviewItem>
-                  <p>total supply</p>
-                  <p>{price?.total_supply}</p>
+                  <span>total supply</span>
+                  <span>{price?.total_supply}</span>
                 </OverviewItem>
                 <OverviewItem>
-                  <p>max supply</p>
-                  <p>{price?.total_supply}</p>
+                  <span>max supply</span>
+                  <span>{price?.total_supply}</span>
                 </OverviewItem>
               </Overview>
+              <Tabs>
+                <Tab isActive={matchPrice !== null}>
+                  <Link to={`/${coinId}/price`}>price</Link>
+                </Tab>
+                <Tab isActive={matchChart !== null}>
+                  <Link to={`/${coinId}/chart`}>chart</Link>
+                </Tab>
+              </Tabs>
+              <Routes>
+                <Route path="price" element={<Price />}/>
+                <Route path="chart" element={<Chart />} />
+              </Routes>
               </>
             )}
         </Container>
