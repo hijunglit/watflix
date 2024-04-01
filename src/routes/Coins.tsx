@@ -46,13 +46,22 @@ const Img = styled.img`
 `
 const Loading = styled.h1``;
 
+interface ICoins {
+    id: string,
+    is_active: boolean,
+    is_new: boolean,
+    name: string,
+    rank: number,
+    symbol: string,
+    type: string,
+}
+
 function Coins() {
-    const { isLoading, data } = useQuery({
+    const { isLoading, data } = useQuery<ICoins[]>({
         queryKey: ['allCoins'],
         queryFn: fetchCoins,
         select: (data) => data.slice(0, 20),
     })
-    console.log(isLoading, data);
     // const [coins, setCoins] = useState<CoinInterface[]>([]);
     // const [loading, setLoading] = useState(true);
     // useEffect(() => {
