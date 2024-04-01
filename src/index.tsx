@@ -5,6 +5,8 @@ import router from './Router';
 import { RouterProvider } from "react-router-dom";
 import { createGlobalStyle } from 'styled-components';
 import { theme } from './theme';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const GlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
@@ -61,6 +63,7 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: none;
   }
 `;
+const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -68,10 +71,13 @@ const root = ReactDOM.createRoot(
 root.render(
   // <React.StrictMode>
   <>
-    <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <RouterProvider router={router} />
+      </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={true} />
+    </QueryClientProvider>
   </>
   // </React.StrictMode>
 );

@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCoins } from "../api";
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -44,35 +46,31 @@ const Img = styled.img`
 `
 const Loading = styled.h1``;
 
-interface CoinInterface {
-    id: string,
-    is_active: boolean,
-    is_new: boolean,
-    name: string,
-    rank: number,
-    symbol: string,
-    type: string,
-}
-
 function Coins() {
-    const [coins, setCoins] = useState<CoinInterface[]>([]);
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        (async() => {
-            const response = await fetch("https://api.coinpaprika.com/v1/coins");
-            const json = await response.json();
-            setCoins(json.slice(0, 20));
-            setLoading(false);
-        })()
-    }, []);
+    const { isLoading, data } = useQuery({
+        queryKey: ['allCoins'],
+        queryFn: fetchCoins,
+        select: (data) => data.slice(0, 20),
+    })
+    console.log(isLoading, data);
+    // const [coins, setCoins] = useState<CoinInterface[]>([]);
+    // const [loading, setLoading] = useState(true);
+    // useEffect(() => {
+    //     (async() => {
+    //         const response = await fetch("https://api.coinpaprika.com/v1/coins");
+    //         const json = await response.json();
+    //         setCoins(json.slice(0, 20));
+    //         setLoading(false);
+    //     })()
+    // }, []);
     return (
         <Container>
             <Header>
                 <Title>Coins</Title>
             </Header>
-                {loading ? <Loading>Loading...</Loading>: (
+                {isLoading ? <Loading>Loading...</Loading>: (
                     <CoinList>
-                        {coins.map((item) => (
+                        {data?.map((item) => (
                             <Coin key={item.id}>
                                 <Link to={item.id} state={{id:item.id, name: item.name}}>
                                     <Img src="https://cryptoicon-api.pages.dev/api/icon/btc" />

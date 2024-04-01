@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Price from "./Price";
 import Chart from "./Chart";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCoinInfo, fetchCoinPrice } from "../api";
 
 const Loading = styled.h1``;
 const Container = styled.div`
@@ -50,7 +52,7 @@ const Tabs = styled.div`
   gap: 10px;
   margin-top: 10px;
 `;
-const Tab = styled.span<{isActive: boolean}>`
+const Tab = styled.span<{isactive: boolean}>`
   text-align: center;
   text-transform: uppercase;
   font-size: 12px;
@@ -60,93 +62,50 @@ const Tab = styled.span<{isActive: boolean}>`
   background: rgba(0, 0, 0, 0.5);
   a {
     display: block;
-    color: ${props => props.isActive ? props.theme.textColor : "#f5f6fa"};
+    color: ${props => props.isactive ? props.theme.textColor : "#f5f6fa"};
   }
 `
 
-interface InfoData {
-  id: string;
-  name: string;
-  symbol: string;
-  rank: number;
-  is_new: boolean;
-  is_active: boolean;
-  type: string;
-  description: string;
-  message: string;
-  open_source: boolean;
-  started_at: string;
-  development_status: string;
-  hardware_wallet: boolean;
-  proof_type: string;
-  org_structure: string;
-  hash_algorithm: string;
-  first_data_at: string;
-  last_data_at: string;
-}
-
-interface PriceData {
-  id:string;
-  name:string;
-  symbol:string;
-  rank:number;
-  total_supply:number;
-  max_supply:number;
-  beta_value:number;
-  first_data_at:string;
-  last_updated:string;
-  quotes:{
-    USD: {
-      ath_date: string;
-      ath_price: number;
-      market_cap: number;
-      market_cap_change_24h: number;
-      percent_change_1h: number;
-      percent_change_1y: number;
-      percent_change_6h: number;
-      percent_change_7d: number;
-      percent_change_12h: number;
-      percent_change_15m: number;
-      percent_change_24h: number;
-      percent_change_30d: number;
-      percent_change_30m: number;
-      percent_from_price_ath: number;
-      price: number;
-      volume_24h: number;
-      volume_24h_change_24h: number;
-    }
-  };
-}
-
 function Coin() {
     const location  = useLocation();
-    const [loading, setLoading] = useState<boolean>(true);
     let { coinId } = useParams<string>();
     let state = location.state as {name: string};
-    const [info, setInfo] = useState<InfoData>();
-    const [price, setPrice] = useState<PriceData>();
     const matchPrice = useMatch("/:coinId/price");
     const matchChart = useMatch("/:coinId/chart");
-    useEffect(() => {
-      (async() => {
-        const infoData = await(await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
-        const priceData = await(await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)).json();
-        setInfo(infoData);
-        setPrice(priceData);
-        setLoading(false)
-      })()
-    }, [coinId]);
+
+    const { isLoading: infoLoading, data: infoData } = useQuery({
+      queryKey: ['info', coinId],
+      queryFn: () => fetchCoinInfo(coinId as string),
+    })
+    const { isLoading: infoPrice, data: priceData } = useQuery({
+      queryKey: ['price', coinId],
+      queryFn: () => fetchCoinPrice(coinId as string),
+    })
+    const loading = infoLoading || infoPrice;
+    // const [loading, setLoading] = useState<boolean>(true);
+    // const [info, setInfo] = useState<InfoData>();
+    // const [price, setPrice] = useState<PriceData>();
+    // useEffect(() => {
+    //   (async() => {
+    //     const infoData = await(await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
+    //     const priceData = await(await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)).json();
+    //     setInfo(infoData);
+    //     setPrice(priceData);
+    //     setLoading(false)
+    //   })()
+    // }, [coinId]);
+
     return (
         <Container>
             <Header>
-                <Title>{state?.name ? state.name : loading ? "Loading..." : info?.name}</Title>
+                <Title>{state?.name ? state.name : loading ? "Loading..." : infoData?.}</Title>
             </Header>
             {loading ? <Loading>Loading...</Loading> : (
               <>
               <Overview>
                 <OverviewItem>
                   <span>rank:</span>
-                  <span>{info?.rank}</span>
+                  <span>{infoData?.rank}</span>
                 </OverviewItem>
                 <OverviewItem>
                   <span>symbol:</span>
@@ -169,10 +128,10 @@ function Coin() {
                 </OverviewItem>
               </Overview>
               <Tabs>
-                <Tab isActive={matchPrice !== null}>
+                <Tab isactive={matchPrice !== null}>
                   <Link to={`/${coinId}/price`}>price</Link>
                 </Tab>
-                <Tab isActive={matchChart !== null}>
+                <Tab isactive={matchChart !== null}>
                   <Link to={`/${coinId}/chart`}>chart</Link>
                 </Tab>
               </Tabs>
