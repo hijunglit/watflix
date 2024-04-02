@@ -1,10 +1,10 @@
 import { Route, Routes, useLocation, useParams, Link, useMatch } from "react-router-dom";
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Price from "./Price";
 import Chart from "./Chart";
 import { useQuery } from "@tanstack/react-query";
-import { fetchCoinInfo, fetchCoinPrice } from "../api";
+import { fetchCoinInfo, fetchCoinPrice } from "../api"; 
+import {Helmet} from "react-helmet";
 
 const Loading = styled.h1``;
 const Container = styled.div`
@@ -52,7 +52,7 @@ const Tabs = styled.div`
   gap: 10px;
   margin-top: 10px;
 `;
-const Tab = styled.span<{isactive: boolean}>`
+const Tab = styled.span<{$isactive: boolean}>`
   text-align: center;
   text-transform: uppercase;
   font-size: 12px;
@@ -62,7 +62,7 @@ const Tab = styled.span<{isactive: boolean}>`
   background: rgba(0, 0, 0, 0.5);
   a {
     display: block;
-    color: ${props => props.isactive ? props.theme.textColor : "#f5f6fa"};
+    color: ${props => props.$isactive ? props.theme.textColor : "#f5f6fa"};
   }
 `
 
@@ -151,6 +151,9 @@ function Coin() {
 
     return (
         <Container>
+          <Helmet>
+            <title>{coinId}</title>
+          </Helmet>
             <Header>
                 <Title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</Title>
             </Header>
@@ -182,10 +185,10 @@ function Coin() {
                 </OverviewItem>
               </Overview>
               <Tabs>
-                <Tab isactive={matchPrice !== null}>
+                <Tab $isactive={matchPrice !== null}>
                   <Link to={`/${coinId}/price`}>price</Link>
                 </Tab>
-                <Tab isactive={matchChart !== null}>
+                <Tab $isactive={matchChart !== null}>
                   <Link to={`/${coinId}/chart`}>chart</Link>
                 </Tab>
               </Tabs>

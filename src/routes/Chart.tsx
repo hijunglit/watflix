@@ -9,12 +9,12 @@ interface chartProps {
 interface historical {
     time_open:number,
     time_close:number,
-    open:number,
-    high:number,
-    low:number,
-    close:number,
-    volume:number,
-    market_cap:number,
+    open:string,
+    high:string,
+    low:string,
+    close:string,
+    volume:string,
+    market_cap:string,
 }
 function Chart({ coinId }:chartProps) {
     const {isLoading, data} = useQuery<historical[]>({
@@ -24,45 +24,47 @@ function Chart({ coinId }:chartProps) {
 
     return (
         <div>
-            {isLoading ? "Loading start..." : (
-                <ApexChart 
-                    type="line"
-                    series={[
-                      {
-                        name: "Price",
-                        data: data?.map((price) => price.close) as Number[],
-                      },
-                    ]}
-                    options={{
-                        theme: {
-                          mode: "dark",
-                        },
-                        chart: {
-                          height: 300,
-                          width: 500,
-                          toolbar: {
-                            show: false,
-                          },
-                          background: "transparent",
-                        },
-                        grid: { show: false },
-                        stroke: {
-                          curve: "smooth",
-                          width: 4,
-                        },
-                        yaxis: {
-                          show: false,
-                        },
-                        xaxis: {
-                          axisBorder: { show: false },
-                          axisTicks: { show: false },
-                          labels: { show: false },
-                        },
-                      }}
-                />
-            )}
+          {isLoading ? (
+            "Loading chart..."
+          ) : (
+            <ApexChart
+              type="line"
+              series={[
+                {
+                  name: "Price",
+                  data: data?.map((price) => parseFloat(price.close)) ?? [],
+                },
+              ]}
+              options={{
+                theme: {
+                  mode: "dark",
+                },
+                chart: {
+                  height: 300,
+                  width: 500,
+                  toolbar: {
+                    show: false,
+                  },
+                  background: "transparent",
+                },
+                grid: { show: false },
+                stroke: {
+                  curve: "smooth",
+                  width: 4,
+                },
+                yaxis: {
+                  show: false,
+                },
+                xaxis: {
+                  axisBorder: { show: false },
+                  axisTicks: { show: false },
+                  labels: { show: false },
+                },
+              }}
+            />
+          )}
         </div>
-    )
+      );
 }
 
 export default Chart;
