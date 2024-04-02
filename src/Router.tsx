@@ -9,6 +9,8 @@ import App from "./App";
 import Price from "./routes/Price";
 import Chart from "./routes/Chart";
 
+const coinId = {}
+
 const router = createBrowserRouter([
     {
       path: "/",
@@ -24,7 +26,7 @@ const router = createBrowserRouter([
         },
         {
           path: "chart",
-          element: <Chart />
+          element: <Chart coinId={coinId as string} />
         }
       ]
     }

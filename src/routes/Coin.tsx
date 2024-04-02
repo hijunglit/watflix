@@ -121,7 +121,7 @@ quotes:{
 
 function Coin() {
     const location  = useLocation();
-    let { coinId } = useParams<string>();
+    let { coinId } = useParams();
     let state = location.state as {name: string};
     const matchPrice = useMatch("/:coinId/price");
     const matchChart = useMatch("/:coinId/chart");
@@ -191,7 +191,7 @@ function Coin() {
               </Tabs>
               <Routes>
                 <Route path="price" element={<Price />}/>
-                <Route path="chart" element={<Chart />} />
+                <Route path="chart" element={<Chart coinId={coinId as string}/>} />
               </Routes>
               </>
             )}
