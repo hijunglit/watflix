@@ -5,10 +5,14 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchCoins } from "../api";
 import { Helmet } from "react-helmet";
 
+styled.body`
+    background: ${props => props.theme.backgroundColor}
+`
 const Container = styled.div`
   padding: 0px 20px;
   max-width: 500px;
   margin: 0 auto;
+
 `;
 const Header = styled.header`
   height: 80px;

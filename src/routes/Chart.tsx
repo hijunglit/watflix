@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchCoinHistory } from "../api";
 import ApexChart from "react-apexcharts";
+import { isTemplateExpression } from "typescript";
 
-interface chartProps {
+interface ChartProps {
     coinId: string,
 }
 
-interface historical {
+interface Historical {
     time_open:number,
     time_close:number,
     open:string,
@@ -16,11 +17,12 @@ interface historical {
     volume:string,
     market_cap:string,
 }
-function Chart({ coinId }:chartProps) {
-    const {isLoading, data} = useQuery<historical[]>({
+function Chart({ coinId }:ChartProps) {
+    const {isLoading, data} = useQuery<Historical[]>({
         queryKey:['ohlcv', coinId],
-        queryFn: () => fetchCoinHistory(coinId)
+        queryFn: () => fetchCoinHistory(coinId),
     })
+    console.log(data)
 
     return (
         <div>
@@ -28,37 +30,49 @@ function Chart({ coinId }:chartProps) {
             "Loading chart..."
           ) : (
             <ApexChart
-              type="line"
+              type="candlestick"
               series={[
-                {
-                  name: "Price",
-                  data: data?.map((price) => parseFloat(price.close)) ?? [],
-                },
+               {
+                 data:
+                  data?.map((price) => ({
+                    x: price.time_open,
+                    y:[price.close, price.open, price.low, price.high],
+                  })) ?? []
+               }
               ]}
               options={{
-                theme: {
-                  mode: "dark",
-                },
                 chart: {
-                  height: 300,
-                  width: 500,
+                  height: 350,
                   toolbar: {
-                    show: false,
-                  },
-                  background: "transparent",
-                },
-                grid: { show: false },
-                stroke: {
-                  curve: "smooth",
-                  width: 4,
-                },
-                yaxis: {
-                  show: false,
+                    show:false,
+                  }
                 },
                 xaxis: {
-                  axisBorder: { show: false },
-                  axisTicks: { show: false },
-                  labels: { show: false },
+                  type: 'datetime',
+                  labels: {
+                    show: false,
+                  }
+                },
+                yaxis: {
+                  show:false,
+                  labels: {
+                    show: false
+                  },
+                  tooltip: {
+                    enabled: true
+                  }
+                },
+                grid: {show: false},
+                plotOptions: {
+                  candlestick: {
+                    colors: {
+                      upward: '#00B746',
+                      downward: '#EF403C'
+                    },
+                    wick: {
+                      useFillColor: true
+                    }
+                  }
                 },
               }}
             />

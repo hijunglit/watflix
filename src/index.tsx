@@ -1,10 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ThemeProvider } from "styled-components";
 import router from './Router';
 import { RouterProvider } from "react-router-dom";
 import { createGlobalStyle } from 'styled-components';
-import { theme } from './theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -56,8 +54,6 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     font-family: "Open Sans", sans-serif;
-    background-color: ${(props) => props.theme.backgroundColor};
-    color: ${(props) => props.theme.textColor}
   }
   a {
     text-decoration: none;
@@ -72,10 +68,8 @@ root.render(
   // <React.StrictMode>
   <>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
         <GlobalStyle />
         <RouterProvider router={router} />
-      </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={true} />
     </QueryClientProvider>
   </>

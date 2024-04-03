@@ -1,10 +1,20 @@
-import { Route, Routes, useLocation, useParams, Link, useMatch } from "react-router-dom";
+import { 
+  Route, 
+  Routes, 
+  useLocation, 
+  useParams, 
+  Link, 
+  useMatch,
+  useNavigate,
+} from "react-router-dom";
 import styled from "styled-components";
 import Price from "./Price";
 import Chart from "./Chart";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCoinInfo, fetchCoinPrice } from "../api"; 
 import {Helmet} from "react-helmet";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
 const Loading = styled.h1``;
 const Container = styled.div`
@@ -14,9 +24,13 @@ const Container = styled.div`
 `;
 const Header = styled.header`
   height: 80px;
-  display: flex;
-  justify-content: center;
+  display: grid;
   align-items: center;
+  grid-template-columns: 1fr 2fr;
+  svg {
+    cursor: pointer;
+    margin-right: 10px;
+  }
 `;
 const Title = styled.h1`
     font-size: 48px;
@@ -120,11 +134,16 @@ quotes:{
 }
 
 function Coin() {
+    const navigate = useNavigate();
     const location  = useLocation();
     let { coinId } = useParams();
     let state = location.state as {name: string};
     const matchPrice = useMatch("/:coinId/price");
     const matchChart = useMatch("/:coinId/chart");
+
+    const gobackBtn = () => {
+      navigate(-1);
+    }
 
     const {isLoading: infoLoading, data: infoData} = useQuery<InfoData>({
       queryKey: ['info', coinId],
@@ -155,6 +174,7 @@ function Coin() {
             <title>{coinId}</title>
           </Helmet>
             <Header>
+                <FontAwesomeIcon icon={faChevronLeft} onClick={gobackBtn} />
                 <Title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</Title>
             </Header>
             {loading ? <Loading>Loading...</Loading> : (
@@ -185,16 +205,16 @@ function Coin() {
                 </OverviewItem>
               </Overview>
               <Tabs>
-                <Tab $isactive={matchPrice !== null}>
-                  <Link to={`/${coinId}/price`}>price</Link>
-                </Tab>
                 <Tab $isactive={matchChart !== null}>
                   <Link to={`/${coinId}/chart`}>chart</Link>
                 </Tab>
+                <Tab $isactive={matchPrice !== null}>
+                  <Link to={`/${coinId}/price`} state={{priceData}}>price</Link>
+                </Tab>
               </Tabs>
               <Routes>
-                <Route path="price" element={<Price />}/>
-                <Route path="chart" element={<Chart coinId={coinId as string}/>} />
+                <Route path="chart" element={<Chart coinId={coinId as string} />} />
+                <Route path="price" element={<Price coinId={coinId as string} />}/>
               </Routes>
               </>
             )}
