@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCoins } from "../api";
 import { Helmet } from "react-helmet";
+import { useRecoilState } from "recoil";
+import { isDarkAtom } from "../atoms";
 
 styled.body`
     background: ${props => props.theme.backgroundColor}
@@ -66,6 +68,8 @@ function Coins() {
         queryFn: fetchCoins,
         select: (data) => data.slice(0, 20),
     });
+    const [isDark, setIsdark] = useRecoilState(isDarkAtom);
+    const onClick = () => setIsdark((prev) => !prev);
     // const [coins, setCoins] = useState<CoinInterface[]>([]);
     // const [loading, setLoading] = useState(true);
     // useEffect(() => {
@@ -83,6 +87,7 @@ function Coins() {
             </Helmet>
             <Header>
                 <Title>Coins</Title>
+                <button onClick={onClick}>Toggle dark</button>
             </Header>
                 {isLoading ? <Loading>Loading...</Loading>: (
                     <CoinList>

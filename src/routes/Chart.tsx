@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchCoinHistory } from "../api";
 import ApexChart from "react-apexcharts";
-import { isTemplateExpression } from "typescript";
 
 interface ChartProps {
     coinId: string,
@@ -41,7 +40,7 @@ function Chart({ coinId }:ChartProps) {
               ]}
               options={{
                 theme:{
-                  mode:"dark",
+                  mode: "light",
                 },
                 chart: {
                   height: 350,

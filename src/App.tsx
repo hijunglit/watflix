@@ -3,7 +3,7 @@ import router from './Router';
 import { RouterProvider } from 'react-router-dom';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { darkTheme, lightTheme } from './theme';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { isDarkAtom } from './atoms';
 
 const GlobalStyle = createGlobalStyle`
@@ -62,7 +62,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
-  const [isDark, setIsDark] = useRecoilState(isDarkAtom)
+  const isDark = useRecoilValue(isDarkAtom)
   return (
     <>
       <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
