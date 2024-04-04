@@ -132,8 +132,11 @@ quotes:{
   }
 };
 }
+interface IIsdark {
+  isDark:boolean,
+}
 
-function Coin() {
+function Coin({isDark}: IIsdark) {
     const navigate = useNavigate();
     const location  = useLocation();
     let { coinId } = useParams();
@@ -154,7 +157,7 @@ function Coin() {
       queryFn: () => (fetchCoinPrice(coinId)),
     })
     const loading = infoLoading || priceLoading;
-
+    console.log(isDark);
     // const [loading, setLoading] = useState<boolean>(true);
     // const [info, setInfo] = useState<InfoData>();
     // const [price, setPrice] = useState<PriceData>();
@@ -213,7 +216,7 @@ function Coin() {
                 </Tab>
               </Tabs>
               <Routes>
-                <Route path="chart" element={<Chart coinId={coinId as string} />} />
+                <Route path="chart" element={<Chart coinId={coinId as string} isDark={isDark} />} />
                 <Route path="price" element={<Price coinId={coinId as string} />}/>
               </Routes>
               </>

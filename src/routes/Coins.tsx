@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCoins } from "../api";
 import { Helmet } from "react-helmet";
@@ -60,13 +59,17 @@ interface ICoins {
     symbol: string,
     type: string,
 }
+interface IIsdark {
+    isDark: boolean,
+}
 
-function Coins() {
+function Coins({isDark} : IIsdark) {
     const { isLoading, data } = useQuery<ICoins[]>({
         queryKey: ['allCoins'],
         queryFn: fetchCoins,
         select: (data) => data.slice(0, 20),
-    })
+    });
+    console.log(isDark);
     // const [coins, setCoins] = useState<CoinInterface[]>([]);
     // const [loading, setLoading] = useState(true);
     // useEffect(() => {

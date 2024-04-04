@@ -18,7 +18,7 @@ const router = createBrowserRouter([
     },
     {
       path: "/:coinId",
-      element: <Coin />,
+      element: <Coin isDark/>,
       children: [
         {
           path: "price",
@@ -26,7 +26,7 @@ const router = createBrowserRouter([
         },
         {
           path: "chart",
-          element: <Chart coinId={coinId as string} />
+          element: <Chart isDark coinId={coinId as string} />
         }
       ]
     }

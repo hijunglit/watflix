@@ -61,13 +61,14 @@ const GlobalStyle = createGlobalStyle`
 
 function App() {
   const [isDark, setIsdark] = useState(false);
-  const toggle = () => setIsdark((current) => !current)
+  const toggleDark = () => setIsdark((current) => !current);
+
   return (
   <>
     <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <button onClick={toggle}>{isDark ? "light mode" : "dark mode"}</button>
       <GlobalStyle />
-      <Coins />
+      <button onClick={toggleDark}>toggle button</button>
+      <Coins isDark={isDark}/>
     </ThemeProvider>
   </>
   );

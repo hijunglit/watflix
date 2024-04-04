@@ -5,6 +5,7 @@ import { isTemplateExpression } from "typescript";
 
 interface ChartProps {
     coinId: string,
+    isDark: boolean,
 }
 
 interface Historical {
@@ -17,12 +18,12 @@ interface Historical {
     volume:string,
     market_cap:string,
 }
-function Chart({ coinId }:ChartProps) {
+function Chart({ coinId, isDark }:ChartProps) {
     const {isLoading, data} = useQuery<Historical[]>({
         queryKey:['ohlcv', coinId],
         queryFn: () => fetchCoinHistory(coinId),
     })
-    console.log(data)
+    console.log("isDark is =?", isDark);
 
     return (
         <div>
@@ -41,6 +42,9 @@ function Chart({ coinId }:ChartProps) {
                }
               ]}
               options={{
+                theme:{
+                  mode:isDark ? "dark": "light",
+                },
                 chart: {
                   height: 350,
                   toolbar: {
