@@ -1,24 +1,15 @@
-import {
-    createBrowserRouter,
-    createRoutesFromElements,
-    Route,
-    Link,
-  } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import Coin from "./routes/Coin";
-import App from "./App";
 import Price from "./routes/Price";
 import Chart from "./routes/Chart";
+import Coins from "./routes/Coins";
 
 const coinId = {}
 
-const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <App />,
-    },
+export const router = createBrowserRouter([
     {
       path: "/:coinId",
-      element: <Coin isDark/>,
+      element: <Coin />,
       children: [
         {
           path: "price",
@@ -26,9 +17,13 @@ const router = createBrowserRouter([
         },
         {
           path: "chart",
-          element: <Chart isDark coinId={coinId as string} />
+          element: <Chart coinId={coinId as string} />
         }
       ]
+    },
+    {
+      path: "/",
+      element: <Coins />,
     }
   ])
 export default router;

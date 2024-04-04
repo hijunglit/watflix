@@ -59,17 +59,13 @@ interface ICoins {
     symbol: string,
     type: string,
 }
-interface IIsdark {
-    isDark: boolean,
-}
 
-function Coins({isDark} : IIsdark) {
+function Coins() {
     const { isLoading, data } = useQuery<ICoins[]>({
         queryKey: ['allCoins'],
         queryFn: fetchCoins,
         select: (data) => data.slice(0, 20),
     });
-    console.log(isDark);
     // const [coins, setCoins] = useState<CoinInterface[]>([]);
     // const [loading, setLoading] = useState(true);
     // useEffect(() => {

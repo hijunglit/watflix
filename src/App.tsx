@@ -1,8 +1,10 @@
-import { ThemeProvider } from "styled-components";
-import { lightTheme, darkTheme } from './theme';
-import { createGlobalStyle } from 'styled-components';
-import Coins from './routes/Coins';
-import { useState } from "react";
+import { ThemeProvider, createGlobalStyle } from 'styled-components';
+import router from './Router';
+import { RouterProvider } from 'react-router-dom';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { darkTheme, lightTheme } from './theme';
+import { useRecoilState } from 'recoil';
+import { isDarkAtom } from './atoms';
 
 const GlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
@@ -60,17 +62,15 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
-  const [isDark, setIsdark] = useState(false);
-  const toggleDark = () => setIsdark((current) => !current);
-
+  const [isDark, setIsDark] = useRecoilState(isDarkAtom)
   return (
-  <>
-    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <GlobalStyle />
-      <button onClick={toggleDark}>toggle button</button>
-      <Coins isDark={isDark}/>
-    </ThemeProvider>
-  </>
+    <>
+      <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+        <GlobalStyle />
+        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={true} />
+      </ThemeProvider>
+    </>
   );
 }
 
