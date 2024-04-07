@@ -1,5 +1,5 @@
 import { createGlobalStyle } from "styled-components";
-import ToDoList from "./ToDoList";
+import ToDoList from "./components/ToDoList";
 
 const GlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
@@ -50,6 +50,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     font-family: "Open Sans", sans-serif;
     background: ${(props) => props.theme.backgroundColor};
+    color: #fff;
   }
   a {
     text-decoration: none;
