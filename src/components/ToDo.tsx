@@ -1,5 +1,5 @@
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { IToDo, toDoState } from "../atom";
+import { IToDo, toDoSelector, toDoState } from "../atom";
 import React from "react";
 
 function ToDo({ text, category, id }: IToDo) {
@@ -12,6 +12,7 @@ function ToDo({ text, category, id }: IToDo) {
     setToDos((oldToDos) => {
       const targetIndex = oldToDos.findIndex((toDo) => toDo.id === id);
       const newToDo = { text, id, category: name as any };
+      console.log(toDoSelector);
       return [
         ...oldToDos.slice(0, targetIndex),
         newToDo,
