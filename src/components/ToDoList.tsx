@@ -1,32 +1,48 @@
-import React, { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useRecoilState, useRecoilValue } from "recoil";
-import styled from "styled-components";
-import CreateToDo from "./CreateToDo";
-import { Categories, categoryState, toDoSelector, toDoState } from "../atom";
-import ToDo from "./ToDo";
+import { useRecoilState } from "recoil";
+import { atom } from "recoil";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+type IForm = {
+  toDo: string;
+};
+interface IToDo {
+  text: string;
+  id: number;
+  category: "TO_DO" | "DOING" | "DONE";
+}
+
+const toDoState = atom<IToDo[]>({
+  key: "toDo",
+  default: [],
+});
 
 function ToDoList() {
-  const toDos = useRecoilValue(toDoSelector);
-  const [category, setCategory] = useRecoilState(categoryState);
-  const onInput = (event: React.FormEvent<HTMLSelectElement>) => {
-    setCategory(event.currentTarget.value as any);
+  const [toDos, setToDos] = useRecoilState(toDoState);
+  const { register, handleSubmit, setValue } = useForm<IForm>();
+  const handleValid = ({ toDo }: IForm) => {
+    setToDos((oldToDos) => [
+      { text: toDo, id: Date.now(), category: "TO_DO" },
+      ...oldToDos,
+    ]);
+    setValue("toDo", "");
   };
   return (
     <>
-      <h1>What work will you hustle today?😀🔥🔥🔥</h1>
-      <hr />
       <h1>To Dos</h1>
       <hr />
-      <select value={category} onInput={onInput}>
-        <option value={Categories.TO_DO}>TO DO</option>
-        <option value={Categories.DOING}>Doing</option>
-        <option value={Categories.DONE}>DONE</option>
-      </select>
-      <CreateToDo />
-      {toDos?.map((toDo) => (
-        <ToDo key={toDo.id} {...toDo} />
-      ))}
+      <form onSubmit={handleSubmit(handleValid)}>
+        <input
+          {...register("toDo", { required: "Write your to do!" })}
+          type='text'
+          placeholder='Write your to do'
+        />
+        <button>add to do</button>
+      </form>
+      <ul>
+        {toDos.map((todo) => (
+          <li key={todo.id}>{todo.text}</li>
+        ))}
+      </ul>
     </>
   );
 }
