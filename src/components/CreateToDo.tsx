@@ -1,29 +1,28 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { Categories, toDoState } from "../atom";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { categoryState, toDoState } from "../atom";
 
 type IForm = {
   toDo: string;
 };
 
 function CreateToDo() {
+  const toDosStorage = "ToDos";
   const [toDos, setToDos] = useRecoilState(toDoState);
+  const category = useRecoilValue(categoryState);
   const { register, handleSubmit, setValue } = useForm<IForm>();
   const handleValid = ({ toDo }: IForm) => {
     setToDos((oldToDos) => [
-      { text: toDo, id: Date.now(), category: Categories.TO_DO },
+      { text: toDo, id: Date.now(), category },
       ...oldToDos,
     ]);
-    const toDosToString = JSON.stringify(toDos);
-    localStorage.setItem("toDos", JSON.stringify(toDosToString));
     setValue("toDo", "");
   };
   return (
     <form onSubmit={handleSubmit(handleValid)}>
       <input
-        {...register("toDo", { required: "Write your to do!" })}
-        type='text'
-        placeholder='Write your to do'
+        {...register("toDo", { required: "Please write your To Do!" })}
+        placeholder='Write your to do!'
       />
       <button>add to do</button>
     </form>

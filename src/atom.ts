@@ -13,8 +13,23 @@ export interface IToDo {
 export const toDoState = atom<IToDo[]>({
   key: "toDo",
   default: [],
+  effects: [
+    ({setSelf, onSet}) => {
+      const todoStorage = "Todos";
+      const savedValue = localStorage.getItem(todoStorage);
+      if(savedValue !== null) {
+        setSelf(JSON.parse(savedValue));
+      }
+      onSet((newValue, _, isReset) => {
+        isReset
+          ?localStorage.removeItem(todoStorage)
+          :localStorage.setItem(todoStorage, JSON.stringify(newValue))
+
+      })
+    }
+  ],
 });
-export const categoryState = atom({
+export const categoryState = atom<Categories>({
   key: "category",
   default: Categories.TO_DO,
 });
