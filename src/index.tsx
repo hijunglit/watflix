@@ -2,9 +2,26 @@ import ReactDOM from "react-dom/client";
 import { RecoilRoot } from "recoil";
 import { ThemeProvider } from "styled-components";
 import App from "./App";
-import { darkTheme } from "./theme";
+import { theme } from "./theme";
 import { createGlobalStyle } from "styled-components";
-
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./Routes/Home";
+import Tv from "./Routes/Tv";
+import Search from "./Routes/Search";
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/tv",
+    element: <Tv />,
+  },
+  {
+    path: "/search",
+    element: <Search />,
+  },
+]);
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -76,8 +93,9 @@ root.render(
   // <React.StrictMode>
   <>
     <RecoilRoot>
-      <ThemeProvider theme={darkTheme}>
+      <ThemeProvider theme={theme}>
         <GlobalStyle />
+        <RouterProvider router={router} />
         <App />
       </ThemeProvider>
     </RecoilRoot>
