@@ -8,20 +8,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./Routes/Home";
 import Tv from "./Routes/Tv";
 import Search from "./Routes/Search";
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Home />,
-  },
-  {
-    path: "/tv",
-    element: <Tv />,
-  },
-  {
-    path: "/search",
-    element: <Search />,
-  },
-]);
+import Header from "./Components/Header";
+
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -78,7 +66,6 @@ body {
   font-family: 'Source Sans Pro', sans-serif;
   color:black;
   line-height: 1.2;
-  background:linear-gradient(135deg,#e09,#d0e);
 }
 a {
   text-decoration:none;
@@ -95,7 +82,6 @@ root.render(
     <RecoilRoot>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
-        <RouterProvider router={router} />
         <App />
       </ThemeProvider>
     </RecoilRoot>
