@@ -77,10 +77,12 @@ root.render(
   // <React.StrictMode>
   <>
     <RecoilRoot>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <App />
-      </ThemeProvider>
+      <QueryClientProvider client={client}>
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          <App />
+        </ThemeProvider>
+      </QueryClientProvider>
     </RecoilRoot>
   </>
   // </React.StrictMode>
