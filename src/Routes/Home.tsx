@@ -45,7 +45,6 @@ const Row = styled(motion.div)`
   width: 100%;
 `;
 const Box = styled(motion.div)<{ $bgphoto: string }>`
-  position: relative;
   background-color: white;
   height: 200px;
   color: red;
@@ -90,7 +89,7 @@ const BigMovie = styled(motion.div)`
   margin: 0 auto;
   border-radius: 15px;
   overflow: hidden;
-  backgrond-color: ${(props) => props.theme.black.lighter};
+  background: ${(props) => props.theme.black.lighter};
 `;
 const BigCover = styled.div`
   width: 100%;
