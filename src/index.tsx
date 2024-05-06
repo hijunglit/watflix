@@ -58,6 +58,7 @@ table {
   box-sizing: border-box;
 }
 body {
+  overflow-x: hidden;
   font-weight: 300;
   font-family: 'Source Sans Pro', sans-serif;
   color:${(props) => props.theme.white.darker};
