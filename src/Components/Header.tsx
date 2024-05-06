@@ -60,6 +60,7 @@ const Search = styled.form`
   position: relative;
   svg {
     height: 25px;
+    margin-right: 25px;
   }
 `;
 const Circle = styled(motion.span)`

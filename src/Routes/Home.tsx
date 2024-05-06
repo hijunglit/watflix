@@ -24,6 +24,7 @@ const Banner = styled.div<{ $bgphoto: string }>`
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
     url(${(props) => props.$bgphoto});
   background-size: cover;
+  background-position: center;
 `;
 const Title = styled.h2`
   font-size: 68px;
@@ -153,7 +154,6 @@ function Home() {
     queryKey: ["movies", "nowPlaying"],
     queryFn: getMovies,
   });
-  // console.log(data, isLoading);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const increaseIndex = () => {
@@ -176,6 +176,7 @@ function Home() {
       // https://velog.io/@adguy/TypeScript-possibly-undefined-value-%ED%95%B4%EA%B2%B0-%ED%95%98%EB%8A%94-%EB%B2%95
       (movie) => movie.id === +bigMovieMatch.params.movieId!
     );
+  console.log(data);
 
   return (
     <Wrapper>
@@ -192,6 +193,7 @@ function Home() {
           </Banner>
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+              <h3 style={{ fontSize: "48px" }}>Now playing</h3>
               <Row
                 variants={rowVariants}
                 initial='hidden'
