@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { IGetMoviesResult, getMovies } from "../api";
+import { IGetMoviesResult, getMovies, getPopularMovie } from "../api";
 import styled from "styled-components";
 import { makeImagePath } from "../utils";
 import { AnimatePresence, motion, useScroll } from "framer-motion";
@@ -150,17 +150,27 @@ function Home() {
   const history = useNavigate();
   const bigMovieMatch = useMatch("/movies/:movieId");
   const { scrollY } = useScroll();
-  const { data, isLoading } = useQuery<IGetMoviesResult>({
-    queryKey: ["movies", "nowPlaying"],
-    queryFn: getMovies,
-  });
+  const { data: nowPlaying, isLoading: nowPlayingLoading } =
+    useQuery<IGetMoviesResult>({
+      queryKey: ["movies", "nowPlaying"],
+      queryFn: getMovies,
+    });
+  const { data: popular, isLoading: popularLoading } =
+    useQuery<IGetMoviesResult>({
+      queryKey: ["movies", "popular"],
+      queryFn: getPopularMovie,
+    });
+  console.log("nowPlaing => ", nowPlaying, "popular =>", popular);
+  const loading = nowPlayingLoading || popularLoading;
+  const data = nowPlaying || popular;
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
+  const [index2, setIndex2] = useState(0);
   const increaseIndex = () => {
-    if (data) {
+    if (nowPlaying) {
       if (leaving) return;
       toggleLeaving();
-      const totalMovies = data.results.length - 1;
+      const totalMovies = nowPlaying.results.length - 1;
       const maxIndex = Math.floor(totalMovies / offset) - 1;
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
@@ -172,24 +182,23 @@ function Home() {
   const onOverlayClick = () => history("/");
   const clickedMovie =
     bigMovieMatch?.params.movieId &&
-    data?.results.find(
+    nowPlaying?.results.find(
       // https://velog.io/@adguy/TypeScript-possibly-undefined-value-%ED%95%B4%EA%B2%B0-%ED%95%98%EB%8A%94-%EB%B2%95
       (movie) => movie.id === +bigMovieMatch.params.movieId!
     );
-  console.log(data);
 
   return (
     <Wrapper>
-      {isLoading ? (
+      {loading ? (
         <Loader>Loading...</Loader>
       ) : (
         <>
           <Banner
             onClick={increaseIndex}
-            $bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}
+            $bgphoto={makeImagePath(nowPlaying?.results[0].backdrop_path || "")}
           >
-            <Title>{data?.results[0].title}</Title>
-            <Overview>{data?.results[0].overview}</Overview>
+            <Title>{nowPlaying?.results[0].title}</Title>
+            <Overview>{nowPlaying?.results[0].overview}</Overview>
           </Banner>
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
@@ -202,7 +211,7 @@ function Home() {
                 transition={{ type: "tween", duration: 1 }}
                 key={index}
               >
-                {data?.results
+                {nowPlaying?.results
                   .slice(1)
                   .slice(offset * index, offset * index + offset)
                   .map((movie) => (
@@ -222,6 +231,37 @@ function Home() {
                     </Box>
                   ))}
               </Row>
+              {/* <div>
+                <h3 style={{ fontSize: "48px" }}>Popular</h3>
+                <Row
+                  variants={rowVariants}
+                  initial='hidden'
+                  animate='visible'
+                  exit='exit'
+                  transition={{ type: "tween", duration: 1 }}
+                  key={index + 1}
+                >
+                  {popular?.results
+                    .slice(1)
+                    .slice(offset * index, offset * index + offset)
+                    .map((movie) => (
+                      <Box
+                        layoutId={movie.id + ""}
+                        whileHover='hover'
+                        initial='normal'
+                        variants={boxVariants}
+                        onClick={() => onBoxClicked(movie.id)}
+                        transition={{ type: "tween" }}
+                        key={movie.id}
+                        $bgphoto={makeImagePath(movie.backdrop_path, "w500")}
+                      >
+                        <Info variants={infoVariants}>
+                          <h4>{movie.title}</h4>
+                        </Info>
+                      </Box>
+                    ))}
+                </Row>
+              </div> */}
             </AnimatePresence>
           </Slider>
           <AnimatePresence>

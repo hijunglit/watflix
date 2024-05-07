@@ -12,7 +12,7 @@ interface IMovie {
     overview: string;
 }
 export interface IGetMoviesResult {
-    dates: {
+    dates?: {
         maximum: string;
         minimum: string;
     }
@@ -47,6 +47,19 @@ export async function getMovies() {
     return await fetch(url, options)
         .then(res => res.json())
         .catch(err => console.error('error:' + err));
+}
+export async function getPopularMovie() {
+    const url = `${BASE_PATH}/movie/popular?language=en-US&page=1`
+    const options = {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          Authorization: `Bearer ${API_ACCESS}`
+        }
+      };
+      return await fetch(url, options)
+        .then(res => res.json())
+        .catch(err => console.error(err))
 }
 
 export async function getTvs() {
