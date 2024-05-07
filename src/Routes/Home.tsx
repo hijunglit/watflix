@@ -40,9 +40,9 @@ const Slider = styled.div`
 `;
 const Row = styled(motion.div)`
   display: grid;
+  position: absolute;
   gap: 10px;
   grid-template-columns: repeat(6, 1fr);
-  position: absolute;
   width: 100%;
 `;
 const Box = styled(motion.div)<{ $bgphoto: string }>`
@@ -111,16 +111,15 @@ const BigOverview = styled.p`
   top: -80px;
   color: ${(props) => props.theme.white.lighter};
 `;
-
 const rowVariants = {
   hidden: {
-    x: window.outerWidth + 5,
+    x: window.outerWidth - 690,
   },
   visible: {
     x: 0,
   },
   exit: {
-    x: -window.outerWidth - 5,
+    x: -window.outerWidth + 690,
   },
 };
 const boxVariants = {
@@ -160,12 +159,11 @@ function Home() {
       queryKey: ["movies", "popular"],
       queryFn: getPopularMovie,
     });
-  console.log("nowPlaing => ", nowPlaying, "popular =>", popular);
   const loading = nowPlayingLoading || popularLoading;
-  const data = nowPlaying || popular;
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
-  const [index2, setIndex2] = useState(0);
+  const [[page, direction], setPage] = useState([0, 0]);
+  const toggleLeaving = () => setLeaving((prev) => !prev);
   const increaseIndex = () => {
     if (nowPlaying) {
       if (leaving) return;
@@ -175,7 +173,6 @@ function Home() {
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
   };
-  const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
     history(`movies/${movieId}`);
   };
@@ -186,6 +183,23 @@ function Home() {
       // https://velog.io/@adguy/TypeScript-possibly-undefined-value-%ED%95%B4%EA%B2%B0-%ED%95%98%EB%8A%94-%EB%B2%95
       (movie) => movie.id === +bigMovieMatch.params.movieId!
     );
+  const totalMovies = nowPlaying!.results.length - 1;
+  const maxIndex = Math.floor(totalMovies / offset) - 1;
+  const paginate = (newDirection: number) => {
+    if (nowPlaying) {
+      if (leaving) return;
+      toggleLeaving();
+      setIndex((prev) =>
+        newDirection === 1
+          ? prev === maxIndex
+            ? 0
+            : prev + 1
+          : prev === 0
+          ? 0
+          : prev - 1
+      );
+    }
+  };
 
   return (
     <Wrapper>
@@ -194,7 +208,6 @@ function Home() {
       ) : (
         <>
           <Banner
-            onClick={increaseIndex}
             $bgphoto={makeImagePath(nowPlaying?.results[0].backdrop_path || "")}
           >
             <Title>{nowPlaying?.results[0].title}</Title>
@@ -208,7 +221,7 @@ function Home() {
                 initial='hidden'
                 animate='visible'
                 exit='exit'
-                transition={{ type: "tween", duration: 1 }}
+                transition={{ type: "tween", duration: 0.7 }}
                 key={index}
               >
                 {nowPlaying?.results
@@ -231,6 +244,22 @@ function Home() {
                     </Box>
                   ))}
               </Row>
+              <div
+                style={{ opacity: index === maxIndex ? "0" : "1" }}
+                key={index + "nowPlayingNext"}
+                className='next'
+                onClick={() => paginate(1)}
+              >
+                {"‣"}
+              </div>
+              <div
+                style={{ opacity: index === 0 ? "0" : "1" }}
+                key={index + "nowPlayingPrev"}
+                className='prev'
+                onClick={() => paginate(-1)}
+              >
+                {"‣"}
+              </div>
               {/* <div>
                 <h3 style={{ fontSize: "48px" }}>Popular</h3>
                 <Row
