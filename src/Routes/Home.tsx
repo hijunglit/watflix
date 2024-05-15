@@ -162,7 +162,6 @@ function Home() {
   const loading = nowPlayingLoading || popularLoading;
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
-  const [[page, direction], setPage] = useState([0, 0]);
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const increaseIndex = () => {
     if (nowPlaying) {
@@ -183,7 +182,7 @@ function Home() {
       // https://velog.io/@adguy/TypeScript-possibly-undefined-value-%ED%95%B4%EA%B2%B0-%ED%95%98%EB%8A%94-%EB%B2%95
       (movie) => movie.id === +bigMovieMatch.params.movieId!
     );
-  const totalMovies = nowPlaying!.results.length - 1;
+  const totalMovies = nowPlaying!?.results.length - 1;
   const maxIndex = Math.floor(totalMovies / offset) - 1;
   const paginate = (newDirection: number) => {
     if (nowPlaying) {
@@ -245,7 +244,9 @@ function Home() {
                   ))}
               </Row>
               <div
-                style={{ opacity: index === maxIndex ? "0" : "1" }}
+                style={{
+                  display: index === maxIndex ? "none" : "flex",
+                }}
                 key={index + "nowPlayingNext"}
                 className='next'
                 onClick={() => paginate(1)}
@@ -253,13 +254,40 @@ function Home() {
                 {"‣"}
               </div>
               <div
-                style={{ opacity: index === 0 ? "0" : "1" }}
+                style={{ display: index === 0 ? "none" : "flex" }}
                 key={index + "nowPlayingPrev"}
                 className='prev'
                 onClick={() => paginate(-1)}
               >
                 {"‣"}
               </div>
+              <Row
+                variants={rowVariants}
+                initial='hidden'
+                animate='visible'
+                exit='exit'
+                transition={{ type: "tween", duration: 0.7 }}
+                key={index + 10}
+              >
+                {popular?.results
+                  .slice(offset * index, offset * index + offset)
+                  .map((movie) => (
+                    <Box
+                      layoutId={movie.id + ""}
+                      whileHover='hover'
+                      initial='normal'
+                      variants={boxVariants}
+                      onClick={() => onBoxClicked(movie.id)}
+                      transition={{ type: "tween" }}
+                      key={movie.id}
+                      $bgphoto={makeImagePath(movie.backdrop_path, "w500")}
+                    >
+                      <Info variants={infoVariants}>
+                        <h4>{movie.title}</h4>
+                      </Info>
+                    </Box>
+                  ))}
+              </Row>
               {/* <div>
                 <h3 style={{ fontSize: "48px" }}>Popular</h3>
                 <Row
