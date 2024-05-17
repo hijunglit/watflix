@@ -86,7 +86,6 @@ function Popular() {
       queryKey: ["movies", "popular"],
       queryFn: getPopularMovie,
     });
-  console.log(popular);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((prev) => !prev);

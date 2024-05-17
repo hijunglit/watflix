@@ -86,7 +86,6 @@ function TopRated() {
       queryKey: ["movies", "topRated"],
       queryFn: getTopRatedMovie,
     });
-  console.log(popular);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((prev) => !prev);
@@ -112,7 +111,7 @@ function TopRated() {
   };
   return (
     <Wrapper>
-      <h3 style={{ fontSize: "48px" }}>Popular</h3>
+      <h3 style={{ fontSize: "48px" }}>Top rated</h3>
       <Row
         variants={rowVariants}
         initial='hidden'
