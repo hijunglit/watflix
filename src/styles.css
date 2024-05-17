@@ -1,6 +1,6 @@
 .next, .prev {
     position: absolute;
-    top: 250%;
+    top: 50%;
     background: white;
     border-radius: 30px;
     width: 40px;
