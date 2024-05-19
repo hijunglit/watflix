@@ -234,7 +234,7 @@ function Home() {
           </Banner>
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
-              <Wrapper key='nowPlaying'>
+              <motion.div key='nowPlaying'>
                 <h3>Now Playing</h3>
                 <Row>
                   {nowPlaying?.results
@@ -274,8 +274,8 @@ function Home() {
                 >
                   {"‣"}
                 </div>
-              </Wrapper>
-              <Wrapper key='topRated'>
+              </motion.div>
+              <motion.div key='topRated'>
                 <h3>Top Rated</h3>
                 <Row>
                   {topRatedMovie?.results
@@ -314,8 +314,8 @@ function Home() {
                 >
                   {"‣"}
                 </div>
-              </Wrapper>
-              <Wrapper key='upComming'>
+              </motion.div>
+              <motion.div key='upComming'>
                 <h3>Upcomming</h3>
                 <Row>
                   {upCommingMovie?.results
@@ -354,7 +354,7 @@ function Home() {
                 >
                   {"‣"}
                 </div>
-              </Wrapper>
+              </motion.div>
             </AnimatePresence>
           </Slider>
           <AnimatePresence>
