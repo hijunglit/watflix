@@ -19,6 +19,7 @@
     "@types/react-dom": "^18.2.22",
     "apexcharts": "^3.48.0",
     "framer-motion": "^11.0.28",
+    "gh-pages": "^6.1.1",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18.2.0",
@@ -35,7 +36,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "gh-pages -d build",
+    "predeploy": "npm run build"
   },
   "eslintConfig": {
     "extends": [
@@ -58,5 +61,6 @@
   "devDependencies": {
     "@types/react-helmet": "^6.1.11",
     "@types/styled-components": "^5.1.34"
-  }
+  },
+  "homepage": "https://hijunglit.github.io/watflix"
 }

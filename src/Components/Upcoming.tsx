@@ -132,7 +132,7 @@ function Upcoming() {
               onClick={() => onBoxClicked(movie.id)}
               transition={{ type: "tween" }}
               key={movie.id}
-              $bgphoto={makeImagePath(movie.backdrop_path, "w500")}
+              $bgphoto={makeImagePath(movie.backdrop_path || "", "w500")}
             >
               <Info variants={infoVariants}>
                 <h4>{movie.title}</h4>

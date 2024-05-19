@@ -81,7 +81,6 @@ function NowPlaying() {
   const history = useNavigate();
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
-  const toggleLeaving = () => setLeaving((prev) => !prev);
   const { data: nowPlaying, isLoading: nowPlayingLoading } =
     useQuery<IGetMoviesResult>({
       queryKey: ["movies", "nowPlaying"],
@@ -93,9 +92,12 @@ function NowPlaying() {
   const totalMovies = nowPlaying!?.results.length - 1;
   const maxIndex = Math.floor(totalMovies / offset) - 1;
   const paginate = (newDirection: number) => {
+    console.log("click!");
     if (nowPlaying) {
-      if (leaving) return;
       toggleLeaving();
+      console.log(leaving);
+      const totalMovies = nowPlaying.results.length - 1;
+      const maxIndex = Math.floor(totalMovies / offset) - 1;
       setIndex((prev) =>
         newDirection === 1
           ? prev === maxIndex
@@ -107,6 +109,10 @@ function NowPlaying() {
       );
     }
   };
+  const toggleLeaving = () => setLeaving((prev) => !prev);
+  console.log("index: ", index);
+  console.log("maxIndex: ", maxIndex);
+  console.log("totalMovies: ", totalMovies);
   return (
     <Wrapper>
       <h3 style={{ fontSize: "48px" }}>Now playing</h3>
@@ -130,7 +136,7 @@ function NowPlaying() {
               onClick={() => onBoxClicked(movie.id)}
               transition={{ type: "tween" }}
               key={movie.id}
-              $bgphoto={makeImagePath(movie.backdrop_path, "w500")}
+              $bgphoto={makeImagePath(movie.backdrop_path || "", "w500")}
             >
               <Info variants={infoVariants}>
                 <h4>{movie.title}</h4>
@@ -143,6 +149,7 @@ function NowPlaying() {
           display: index === maxIndex ? "none" : "flex",
         }}
         className='next'
+        key={index + "nowPlayingNext"}
         onClick={() => paginate(1)}
       >
         {"‣"}
@@ -150,6 +157,7 @@ function NowPlaying() {
       <div
         style={{ display: index === 0 ? "none" : "flex" }}
         className='prev'
+        key={index + "nowPlayingPrev"}
         onClick={() => paginate(-1)}
       >
         {"‣"}

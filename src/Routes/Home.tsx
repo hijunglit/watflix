@@ -20,40 +20,6 @@ import Upcoming from "../Components/Upcoming";
 const Wrapper = styled.div`
   background: black;
 `;
-const Row = styled(motion.div)`
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(6, 1fr);
-  width: 100%;
-`;
-const Box = styled(motion.div)<{ $bgphoto: string }>`
-  background-color: white;
-  height: 200px;
-  color: red;
-  font-size: 66px;
-  cursor: pointer;
-  background-image: url(${(props) => props.$bgphoto});
-  background-size: cover;
-  background-position: center;
-  &:first-child {
-    transform-origin: center left;
-  }
-  &:last-child {
-    transform-origin: center right;
-  }
-`;
-const Info = styled(motion.div)`
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  h4 {
-    text-align: center;
-    font-size: 18px;
-  }
-  padding: 10px;
-  opacity: 0;
-  background-color: ${(props) => props.theme.black.lighter};
-`;
 const Loader = styled.div`
   height: 20vh;
   display: flex;
@@ -225,10 +191,10 @@ function Home() {
           </Banner>
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
-              {nowPlaying ? <NowPlaying /> : null}
-              {topRated ? <TopRated /> : null}
-              {upcoming ? <Upcoming /> : null}
-              {latest ? <Latest /> : null}
+              {nowPlaying ? <NowPlaying key={"nowPlaying"} /> : null}
+              {topRated ? <TopRated key={"topRated"} /> : null}
+              {upcoming ? <Upcoming key={"upComing"} /> : null}
+              {latest ? <Latest key={"latest"} /> : null}
             </AnimatePresence>
           </Slider>
           <AnimatePresence>
