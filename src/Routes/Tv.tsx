@@ -81,7 +81,7 @@ const Overlay = styled(motion.div)`
   background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
 `;
-const BigMovie = styled(motion.div)`
+const BigTv = styled(motion.div)`
   position: absolute;
   width: 40vw;
   height: 80vh;
@@ -148,34 +148,35 @@ const infoVariants = {
 const offset = 6;
 function Tv() {
   const history = useNavigate();
-  const bigMovieMatch = useMatch("/movies/:movieId");
   const { scrollY } = useScroll();
-  const { data, isLoading } = useQuery<IGetTvsResult>({
+  const { data: tvs, isLoading } = useQuery<IGetTvsResult>({
     queryKey: ["tvs", "airingToday"],
     queryFn: getTvs,
   });
-  console.log(data, isLoading);
+  
+  const bigTvMatch = useMatch("/tv/:tvId");
+  console.log(bigTvMatch);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const increaseIndex = () => {
-    if (data) {
+    if (tvs) {
       if (leaving) return;
       toggleLeaving();
-      const totalMovies = data.results.length - 1;
+      const totalMovies = tvs.results.length - 1;
       const maxIndex = Math.floor(totalMovies / offset) - 1;
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
   };
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (tvId: number) => {
-    history(`/tvs/${tvId}`);
+    history(`/tv/${tvId}`);
   };
-  const onOverlayClick = () => history("/");
-  const clickedMovie =
-    bigMovieMatch?.params.movieId &&
-    data?.results.find(
+  const onOverlayClick = () => history("/tv");
+  const clickedTv =
+    bigTvMatch?.params.tvId &&
+    tvs?.results.find(
       // https://velog.io/@adguy/TypeScript-possibly-undefined-value-%ED%95%B4%EA%B2%B0-%ED%95%98%EB%8A%94-%EB%B2%95
-      (movie) => movie.id === +bigMovieMatch.params.movieId!
+      (tv) => tv.id === +bigTvMatch.params.tvId!
     );
 
   return (
@@ -186,10 +187,10 @@ function Tv() {
         <>
           <Banner
             onClick={increaseIndex}
-            $bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}
+            $bgphoto={makeImagePath(tvs?.results[0].backdrop_path || "")}
           >
-            <Title>{data?.results[0].name}</Title>
-            <Overview>{data?.results[0].overview}</Overview>
+            <Title>{tvs?.results[0].name}</Title>
+            <Overview>{tvs?.results[0].overview}</Overview>
           </Banner>
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
@@ -202,7 +203,7 @@ function Tv() {
                 transition={{ type: "tween", duration: 1 }}
                 key={index}
               >
-                {data?.results
+                {tvs?.results
                   .slice(1)
                   .slice(offset * index, offset * index + offset)
                   .map((tv) => (
@@ -225,32 +226,32 @@ function Tv() {
             </AnimatePresence>
           </Slider>
           <AnimatePresence>
-            {bigMovieMatch ? (
+            {bigTvMatch ? (
               <>
                 <Overlay
                   onClick={onOverlayClick}
                   exit={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 />
-                <BigMovie
+                <BigTv
                   style={{ top: scrollY.get() + 100 }}
-                  layoutId={bigMovieMatch.params.movieId}
+                  layoutId={bigTvMatch.params.tvId}
                 >
-                  {clickedMovie && (
+                  {clickedTv && (
                     <>
                       <BigCover
                         style={{
                           backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
-                            clickedMovie.backdrop_path,
+                            clickedTv.backdrop_path,
                             "w500"
                           )})`,
                         }}
                       />
-                      <BigTitle>{clickedMovie.name}</BigTitle>
-                      <BigOverview>{clickedMovie.overview}</BigOverview>
+                      <BigTitle>{clickedTv.name}</BigTitle>
+                      <BigOverview>{clickedTv.overview}</BigOverview>
                     </>
                   )}
-                </BigMovie>
+                </BigTv>
               </>
             ) : null}
           </AnimatePresence>

@@ -92,7 +92,6 @@ function Latest() {
       queryKey: ["movies", "latest"],
       queryFn: getLatestMovie,
     });
-  console.log(latestMovie, latestLoading);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((prev) => !prev);
@@ -119,7 +118,7 @@ function Latest() {
             onClick={() => onBoxClicked(latestMovie.id)}
             transition={{ type: "tween" }}
             key={latestMovie.id}
-            $bgphoto={makeImagePath(latestMovie.backdrop_path!, "w500")}
+            $bgphoto={makeImagePath(latestMovie.backdrop_path || "", "w500")}
           >
             <Info variants={infoVariants}>
               <h4>{latestMovie.title}</h4>

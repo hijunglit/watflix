@@ -86,7 +86,6 @@ function TopRated() {
       queryKey: ["movies", "topRated"],
       queryFn: getTopRatedMovie,
     });
-  console.log(topRatedMovies, topRatedLoading);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((prev) => !prev);

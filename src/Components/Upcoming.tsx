@@ -87,7 +87,6 @@ function Upcoming() {
       queryKey: ["movies", "upcoming"],
       queryFn: getUpcomingMovie,
     });
-  console.log(upComingMovies, upComingLoading);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((prev) => !prev);
