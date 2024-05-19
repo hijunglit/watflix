@@ -51,6 +51,6 @@ export async function getPopularMovie() {
 export async function getTvs() {
     return await fetch(`${BASE_PATH}/tv/airing_today?api_key=${API_KEY}`).then((response) => response.json());
 }
-export async function search() {
-    return await fetch(`${BASE_PATH}/search/keyword?api_key=${API_KEY}`).then((response) => response.json());
+export async function search(keyword: string) {
+    return await fetch(`${BASE_PATH}/search/keyword?api_key=${API_KEY}&query=${keyword}`).then((response) => response.json());
 }

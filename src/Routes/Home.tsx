@@ -49,6 +49,28 @@ const Slider = styled.div`
   position: relative;
   top: -100px;
 `;
+const Row = styled(motion.div)`
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(6, 1fr);
+  width: 100%;
+`;
+const Box = styled(motion.div)<{ $bgphoto: string }>`
+  background-color: white;
+  height: 200px;
+  color: red;
+  font-size: 66px;
+  cursor: pointer;
+  background-image: url(${(props) => props.$bgphoto});
+  background-size: cover;
+  background-position: center;
+  &:first-child {
+    transform-origin: center left;
+  }
+  &:last-child {
+    transform-origin: center right;
+  }
+`;
 const Overlay = styled(motion.div)`
   position: fixed;
   top: 0;
@@ -129,20 +151,42 @@ function Home() {
       queryKey: ["movies", "nowPlaying"],
       queryFn: getMovies,
     });
-  const { data: latest, isLoading: latestLoading } = useQuery({
-    queryKey: ["movies", "latest"],
-    queryFn: getLatestMovie,
-  });
-  const { data: topRated, isLoading: topRatedLoading } =
-    useQuery<IGetMoviesResult>({
-      queryKey: ["movies", "topRated"],
+  const useMultipleQuery = () => {
+    const latest = useQuery<IGetMoviesResult>({
+      queryKey: ["latest"],
+      queryFn: getLatestMovie,
+    });
+    const topRated = useQuery<IGetMoviesResult>({
+      queryKey: ["topRated"],
       queryFn: getTopRatedMovie,
     });
-  const { data: upcoming, isLoading: upComingLoading } =
-    useQuery<IGetMoviesResult>({
-      queryKey: ["movies", "upcoming"],
+    const upComming = useQuery<IGetMoviesResult>({
+      queryKey: ["upComming"],
       queryFn: getUpcomingMovie,
     });
+    return [latest, topRated, upComming];
+  };
+  const [
+    { data: latestMovie, isLoading: loadingLatest },
+    { data: topRatedMovie, isLoading: loadingTopRated },
+    { data: upCommingMovie, isLoading: loadingUpComming },
+  ] = useMultipleQuery();
+  const data = nowPlaying || latestMovie || topRatedMovie || upCommingMovie;
+  const isLoading = loadingLatest || loadingTopRated || loadingUpComming;
+  // const { data: latest, isLoading: latestLoading } = useQuery({
+  //   queryKey: ["movies", "latest"],
+  //   queryFn: getLatestMovie,
+  // });
+  // const { data: topRated, isLoading: topRatedLoading } =
+  //   useQuery<IGetMoviesResult>({
+  //     queryKey: ["movies", "topRated"],
+  //     queryFn: getTopRatedMovie,
+  //   });
+  // const { data: upcoming, isLoading: upComingLoading } =
+  //   useQuery<IGetMoviesResult>({
+  //     queryKey: ["movies", "upcoming"],
+  //     queryFn: getUpcomingMovie,
+  //   });
   const onBoxClicked = (movieId: number) => {
     history(`movies/${movieId}`);
   };
@@ -163,20 +207,19 @@ function Home() {
       );
     }
   };
-  const data = nowPlaying || latest || topRated || upcoming;
-  const isLoading =
-    nowPlayingLoading || latestLoading || topRatedLoading || upComingLoading;
   const bigMovieMatch = useMatch(process.env.PUBLIC_URL + "/movies/:movieId");
+  console.log(bigMovieMatch);
   const { scrollY } = useScroll();
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((prev) => !prev);
-  const onOverlayClick = () => history("/");
+  const onOverlayClick = () => history(process.env.PUBLIC_URL + "/");
   const clickedMovie =
     bigMovieMatch?.params.movieId &&
-    nowPlaying?.results.find(
+    data?.results.find(
       // https://velog.io/@adguy/TypeScript-possibly-undefined-value-%ED%95%B4%EA%B2%B0-%ED%95%98%EB%8A%94-%EB%B2%95
       (movie) => movie.id === +bigMovieMatch.params.movieId!
     );
+  console.log(clickedMovie);
   return (
     <Wrapper>
       {isLoading ? (
@@ -191,10 +234,127 @@ function Home() {
           </Banner>
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
-              {nowPlaying ? <NowPlaying key={"nowPlaying"} /> : null}
-              {topRated ? <TopRated key={"topRated"} /> : null}
-              {upcoming ? <Upcoming key={"upComing"} /> : null}
-              {latest ? <Latest key={"latest"} /> : null}
+              <Wrapper key='nowPlaying'>
+                <h3>Now Playing</h3>
+                <Row>
+                  {nowPlaying?.results
+                    .slice(1)
+                    .slice(offset * index, offset * index + offset)
+                    .map((movie) => (
+                      <Box
+                        layoutId={movie.id + ""}
+                        variants={boxVariants}
+                        whileHover='hover'
+                        initial='normal'
+                        onClick={() => onBoxClicked(movie.id)}
+                        transition={{ type: "tween" }}
+                        key={movie.id}
+                        $bgphoto={makeImagePath(
+                          movie.backdrop_path || "",
+                          "w500"
+                        )}
+                      />
+                    ))}
+                </Row>
+                <div
+                  style={{
+                    display: index === maxIndex ? "none" : "flex",
+                  }}
+                  className='next'
+                  key={index + "nowPlayingNext"}
+                  onClick={() => paginate(1)}
+                >
+                  {"‣"}
+                </div>
+                <div
+                  style={{ display: index === 0 ? "none" : "flex" }}
+                  className='prev'
+                  key={index + "nowPlayingPrev"}
+                  onClick={() => paginate(-1)}
+                >
+                  {"‣"}
+                </div>
+              </Wrapper>
+              <Wrapper key='topRated'>
+                <h3>Top Rated</h3>
+                <Row>
+                  {topRatedMovie?.results
+                    .slice(offset * index, offset * index + offset)
+                    .map((movie) => (
+                      <Box
+                        layoutId={movie.id + ""}
+                        variants={boxVariants}
+                        whileHover='hover'
+                        initial='normal'
+                        onClick={() => onBoxClicked(movie.id)}
+                        transition={{ type: "tween" }}
+                        key={movie.id}
+                        $bgphoto={makeImagePath(
+                          movie.backdrop_path || "",
+                          "w500"
+                        )}
+                      />
+                    ))}
+                </Row>
+                <div
+                  style={{
+                    display: index === maxIndex ? "none" : "flex",
+                  }}
+                  className='next'
+                  key={index + "nowPlayingNext"}
+                  onClick={() => paginate(1)}
+                >
+                  {"‣"}
+                </div>
+                <div
+                  style={{ display: index === 0 ? "none" : "flex" }}
+                  className='prev'
+                  key={index + "nowPlayingPrev"}
+                  onClick={() => paginate(-1)}
+                >
+                  {"‣"}
+                </div>
+              </Wrapper>
+              <Wrapper key='upComming'>
+                <h3>Upcomming</h3>
+                <Row>
+                  {upCommingMovie?.results
+                    .slice(offset * index, offset * index + offset)
+                    .map((movie) => (
+                      <Box
+                        layoutId={movie.id + ""}
+                        variants={boxVariants}
+                        whileHover='hover'
+                        initial='normal'
+                        onClick={() => onBoxClicked(movie.id)}
+                        transition={{ type: "tween" }}
+                        key={movie.id}
+                        $bgphoto={makeImagePath(
+                          movie.backdrop_path || "",
+                          "w500"
+                        )}
+                      />
+                    ))}
+                </Row>
+                <div
+                  style={{
+                    display: index === maxIndex ? "none" : "flex",
+                  }}
+                  className='next'
+                  key={index + "nowPlayingNext"}
+                  onClick={() => paginate(1)}
+                >
+                  {"‣"}
+                </div>
+                <div
+                  style={{ display: index === 0 ? "none" : "flex" }}
+                  className='prev'
+                  key={index + "nowPlayingPrev"}
+                  onClick={() => paginate(-1)}
+                >
+                  {"‣"}
+                </div>
+              </Wrapper>
             </AnimatePresence>
           </Slider>
           <AnimatePresence>

@@ -153,8 +153,8 @@ function Tv() {
     queryKey: ["tvs", "airingToday"],
     queryFn: getTvs,
   });
-  
-  const bigTvMatch = useMatch("/tv/:tvId");
+
+  const bigTvMatch = useMatch(process.env.PUBLIC_URL + "/tv/:tvId");
   console.log(bigTvMatch);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
@@ -169,9 +169,9 @@ function Tv() {
   };
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (tvId: number) => {
-    history(`/tv/${tvId}`);
+    history(`${process.env.PUBLIC_URL}/tv/${tvId}`);
   };
-  const onOverlayClick = () => history("/tv");
+  const onOverlayClick = () => history(process.env.PUBLIC_URL + "/tv");
   const clickedTv =
     bigTvMatch?.params.tvId &&
     tvs?.results.find(
