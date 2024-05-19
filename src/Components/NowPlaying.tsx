@@ -107,15 +107,6 @@ function NowPlaying() {
       );
     }
   };
-  const increaseIndex = () => {
-    if (nowPlaying) {
-      if (leaving) return;
-      toggleLeaving();
-      const totalMovies = nowPlaying.results.length - 1;
-      const maxIndex = Math.floor(totalMovies / offset) - 1;
-      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
-    }
-  };
   return (
     <Wrapper>
       <h3 style={{ fontSize: "48px" }}>Now playing</h3>
@@ -151,7 +142,6 @@ function NowPlaying() {
         style={{
           display: index === maxIndex ? "none" : "flex",
         }}
-        key={"next"}
         className='next'
         onClick={() => paginate(1)}
       >
@@ -159,7 +149,6 @@ function NowPlaying() {
       </div>
       <div
         style={{ display: index === 0 ? "none" : "flex" }}
-        key={"prev"}
         className='prev'
         onClick={() => paginate(-1)}
       >
