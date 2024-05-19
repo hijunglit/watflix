@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/watflix/static/css/main.f6a33d5b.css",
-    "main.js": "/watflix/static/js/main.ce00b22b.js",
+    "main.js": "/watflix/static/js/main.ae70e7d7.js",
     "index.html": "/watflix/index.html",
     "main.f6a33d5b.css.map": "/watflix/static/css/main.f6a33d5b.css.map",
-    "main.ce00b22b.js.map": "/watflix/static/js/main.ce00b22b.js.map"
+    "main.ae70e7d7.js.map": "/watflix/static/js/main.ae70e7d7.js.map"
   },
   "entrypoints": [
     "static/css/main.f6a33d5b.css",
-    "static/js/main.ce00b22b.js"
+    "static/js/main.ae70e7d7.js"
   ]
 }
