@@ -96,7 +96,7 @@ function Latest() {
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
-    history(`movies/${movieId}`);
+    history(`${process.env.PUBLIC_URL}/movies/${movieId}`);
   };
   return (
     <Wrapper>

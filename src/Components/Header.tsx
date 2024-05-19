@@ -155,12 +155,12 @@ function Header() {
         </Logo>
         <Items>
           <Item>
-            <Link to='/'>
+            <Link to={process.env.PUBLIC_URL + "/"}>
               Home{homeMatch?.pathname === "/" && <Circle layoutId='circle' />}
             </Link>
           </Item>
           <Item>
-            <Link to='/tv'>
+            <Link to={process.env.PUBLIC_URL + "/tv"}>
               Tv Shows
               {tvMatch?.pathname === "/tv" && <Circle layoutId='circle' />}
             </Link>

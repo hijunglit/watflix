@@ -166,7 +166,7 @@ function Home() {
   const data = nowPlaying || latest || topRated || upcoming;
   const isLoading =
     nowPlayingLoading || latestLoading || topRatedLoading || upComingLoading;
-  const bigMovieMatch = useMatch("/movies/:movieId");
+  const bigMovieMatch = useMatch(process.env.PUBLIC_URL + "/movies/:movieId");
   const { scrollY } = useScroll();
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((prev) => !prev);

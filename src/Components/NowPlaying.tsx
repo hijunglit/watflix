@@ -87,7 +87,7 @@ function NowPlaying() {
       queryFn: getMovies,
     });
   const onBoxClicked = (movieId: number) => {
-    history(`movies/${movieId}`);
+    history(`${process.env.PUBLIC_URL}/movies/${movieId}`);
   };
   const totalMovies = nowPlaying!?.results.length - 1;
   const maxIndex = Math.floor(totalMovies / offset) - 1;

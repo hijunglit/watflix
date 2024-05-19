@@ -91,13 +91,12 @@ function Upcoming() {
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
-    history(`movies/${movieId}`);
+    history(`${process.env.PUBLIC_URL}/movies/${movieId}`);
   };
   const totalMovies = upComingMovies!?.results.length - 1;
   const maxIndex = Math.floor(totalMovies / offset) - 1;
   const paginate = (newDirection: number) => {
     if (upComingMovies) {
-      if (leaving) return;
       toggleLeaving();
       setIndex((prev) =>
         newDirection === 1
