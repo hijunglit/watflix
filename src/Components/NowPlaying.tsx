@@ -87,6 +87,7 @@ function NowPlaying() {
       queryKey: ["movies", "nowPlaying"],
       queryFn: getMovies,
     });
+  console.log(nowPlaying, nowPlayingLoading);
   const onBoxClicked = (movieId: number) => {
     history(`movies/${movieId}`);
   };

@@ -8,6 +8,8 @@ import { useMatch, useNavigate } from "react-router-dom";
 import NowPlaying from "../Components/NowPlaying";
 import Popular from "../Components/Popular";
 import TopRated from "../Components/TopRated";
+import Upcoming from "../Components/Upcoming";
+import Latest from "../Components/Latest";
 
 const Wrapper = styled.div`
   background: black;
@@ -113,8 +115,10 @@ function Home() {
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <NowPlaying />
-              <Popular />
               <TopRated />
+              <Upcoming />
+              <Popular />
+              <Latest />
             </AnimatePresence>
           </Slider>
           <AnimatePresence>

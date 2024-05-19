@@ -1,8 +1,8 @@
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { IGetMoviesResult, getTopRatedMovie } from "../api";
-import { useQuery } from "@tanstack/react-query";
+import { IGetMoviesResult, getLatestMovie } from "../api";
 import { useState } from "react";
 import { makeImagePath } from "../utils";
 
@@ -78,41 +78,30 @@ const infoVariants = {
   },
 };
 
+interface IGetLatestMovie {
+  id: number;
+  title: string;
+  backdrop_path?: string;
+}
+
 const offset = 6;
-function TopRated() {
+function Latest() {
   const history = useNavigate();
-  const { data: topRatedMovies, isLoading: topRatedLoading } =
-    useQuery<IGetMoviesResult>({
-      queryKey: ["movies", "topRated"],
-      queryFn: getTopRatedMovie,
+  const { data: latestMovie, isLoading: latestLoading } =
+    useQuery<IGetLatestMovie>({
+      queryKey: ["movies", "latest"],
+      queryFn: getLatestMovie,
     });
-  console.log(topRatedMovies, topRatedLoading);
+  console.log(latestMovie, latestLoading);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
     history(`movies/${movieId}`);
   };
-  const totalMovies = topRatedMovies!?.results.length - 1;
-  const maxIndex = Math.floor(totalMovies / offset) - 1;
-  const paginate = (newDirection: number) => {
-    if (topRatedMovies) {
-      if (leaving) return;
-      toggleLeaving();
-      setIndex((prev) =>
-        newDirection === 1
-          ? prev === maxIndex
-            ? 0
-            : prev + 1
-          : prev === 0
-          ? 0
-          : prev - 1
-      );
-    }
-  };
   return (
     <Wrapper>
-      <h3 style={{ fontSize: "48px" }}>Top rated</h3>
+      <h3 style={{ fontSize: "48px" }}>Latest</h3>
       <Row
         variants={rowVariants}
         initial='hidden'
@@ -121,44 +110,25 @@ function TopRated() {
         transition={{ type: "tween", duration: 1 }}
         key={index}
       >
-        {topRatedMovies?.results
-          .slice(offset * index, offset * index + offset)
-          .map((movie) => (
-            <Box
-              layoutId={movie.id + ""}
-              whileHover='hover'
-              initial='normal'
-              variants={boxVariants}
-              onClick={() => onBoxClicked(movie.id)}
-              transition={{ type: "tween" }}
-              key={movie.id}
-              $bgphoto={makeImagePath(movie.backdrop_path, "w500")}
-            >
-              <Info variants={infoVariants}>
-                <h4>{movie.title}</h4>
-              </Info>
-            </Box>
-          ))}
+        {latestMovie ? (
+          <Box
+            layoutId={latestMovie.id + ""}
+            whileHover='hover'
+            initial='normal'
+            variants={boxVariants}
+            onClick={() => onBoxClicked(latestMovie.id)}
+            transition={{ type: "tween" }}
+            key={latestMovie.id}
+            $bgphoto={makeImagePath(latestMovie.backdrop_path!, "w500")}
+          >
+            <Info variants={infoVariants}>
+              <h4>{latestMovie.title}</h4>
+            </Info>
+          </Box>
+        ) : null}
       </Row>
-      <div
-        style={{
-          display: index === maxIndex ? "none" : "flex",
-        }}
-        key={"next"}
-        className='next'
-        onClick={() => paginate(1)}
-      >
-        {"‣"}
-      </div>
-      <div
-        style={{ display: index === 0 ? "none" : "flex" }}
-        key={"prev"}
-        className='prev'
-        onClick={() => paginate(-1)}
-      >
-        {"‣"}
-      </div>
     </Wrapper>
   );
 }
-export default TopRated;
+
+export default Latest;

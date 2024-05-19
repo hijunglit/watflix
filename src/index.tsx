@@ -5,6 +5,7 @@ import App from "./App";
 import { theme } from "./theme";
 import { createGlobalStyle } from "styled-components";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import "./styles.css";
 
@@ -85,6 +86,7 @@ root.render(
           <GlobalStyle />
           <App />
         </ThemeProvider>
+        <ReactQueryDevtools initialIsOpen={true} />
       </QueryClientProvider>
     </RecoilRoot>
   </>

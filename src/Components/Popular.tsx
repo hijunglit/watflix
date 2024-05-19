@@ -121,7 +121,6 @@ function Popular() {
         key={index}
       >
         {popular?.results
-          .slice(1)
           .slice(offset * index, offset * index + offset)
           .map((movie) => (
             <Box

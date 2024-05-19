@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { IGetMoviesResult, getTopRatedMovie } from "../api";
+import { IGetMoviesResult, getUpcomingMovie } from "../api";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { makeImagePath } from "../utils";
@@ -79,24 +79,25 @@ const infoVariants = {
 };
 
 const offset = 6;
-function TopRated() {
+
+function Upcoming() {
   const history = useNavigate();
-  const { data: topRatedMovies, isLoading: topRatedLoading } =
+  const { data: upComingMovies, isLoading: upComingLoading } =
     useQuery<IGetMoviesResult>({
-      queryKey: ["movies", "topRated"],
-      queryFn: getTopRatedMovie,
+      queryKey: ["movies", "upcoming"],
+      queryFn: getUpcomingMovie,
     });
-  console.log(topRatedMovies, topRatedLoading);
+  console.log(upComingMovies, upComingLoading);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
     history(`movies/${movieId}`);
   };
-  const totalMovies = topRatedMovies!?.results.length - 1;
+  const totalMovies = upComingMovies!?.results.length - 1;
   const maxIndex = Math.floor(totalMovies / offset) - 1;
   const paginate = (newDirection: number) => {
-    if (topRatedMovies) {
+    if (upComingMovies) {
       if (leaving) return;
       toggleLeaving();
       setIndex((prev) =>
@@ -112,7 +113,7 @@ function TopRated() {
   };
   return (
     <Wrapper>
-      <h3 style={{ fontSize: "48px" }}>Top rated</h3>
+      <h3 style={{ fontSize: "48px" }}>Upcoming</h3>
       <Row
         variants={rowVariants}
         initial='hidden'
@@ -121,7 +122,7 @@ function TopRated() {
         transition={{ type: "tween", duration: 1 }}
         key={index}
       >
-        {topRatedMovies?.results
+        {upComingMovies?.results
           .slice(offset * index, offset * index + offset)
           .map((movie) => (
             <Box
@@ -161,4 +162,5 @@ function TopRated() {
     </Wrapper>
   );
 }
-export default TopRated;
+
+export default Upcoming;
