@@ -136,7 +136,7 @@ function Header() {
   const history = useNavigate();
   const { register, handleSubmit } = useForm<IForm>();
   const onValid = (data: IForm) => {
-    history(`/search?keyword=${data.keyword}`);
+    history(`${process.env.PUBLIC_URL}/search?keyword=${data.keyword}`);
   };
 
   return (

@@ -28,6 +28,7 @@ export interface IGetTvsResult {
     total_pages: number,
     total_results: number,
 }
+
 // https://api.themoviedb.org/3/movie/11?api_key=17048dc01f87f281be6e07ca6f6cb5e5
 const API_KEY = "17048dc01f87f281be6e07ca6f6cb5e5";
 const BASE_PATH = "https://api.themoviedb.org/3";
@@ -51,6 +52,6 @@ export async function getPopularMovie() {
 export async function getTvs() {
     return await fetch(`${BASE_PATH}/tv/airing_today?api_key=${API_KEY}`).then((response) => response.json());
 }
-export async function search(keyword: string) {
-    return await fetch(`${BASE_PATH}/search/keyword?api_key=${API_KEY}&query=${keyword}`).then((response) => response.json());
+export async function searchMovies(keyword: string) {
+    return await fetch(`${BASE_PATH}/search/movie?query=${keyword}&api_key=${API_KEY}`).then((response) => response.json());
 }
