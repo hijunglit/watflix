@@ -3,7 +3,6 @@ import {
   IGetMoviesResult,
   getLatestMovie,
   getMovies,
-  getPopularMovie,
   getTopRatedMovie,
   getUpcomingMovie,
 } from "../api";
@@ -12,10 +11,7 @@ import { makeImagePath } from "../utils";
 import { AnimatePresence, motion, useScroll } from "framer-motion";
 import { useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
-import NowPlaying from "../Components/NowPlaying";
-import Latest from "../Components/Latest";
-import TopRated from "../Components/TopRated";
-import Upcoming from "../Components/Upcoming";
+import Pagenation from "../Components/Pagenation";
 
 const Wrapper = styled.div`
   background: black;
@@ -144,14 +140,12 @@ const infoVariants = {
 };
 const offset = 6;
 function Home() {
-  const [index, setIndex] = useState(0);
   const history = useNavigate();
-  const { data: nowPlaying, isLoading: nowPlayingLoading } =
-    useQuery<IGetMoviesResult>({
-      queryKey: ["movies", "nowPlaying"],
+  const useMultipleQuery = () => {
+    const nowPlaying = useQuery<IGetMoviesResult>({
+      queryKey: ["nowPlaying"],
       queryFn: getMovies,
     });
-  const useMultipleQuery = () => {
     const latest = useQuery<IGetMoviesResult>({
       queryKey: ["latest"],
       queryFn: getLatestMovie,
@@ -164,29 +158,19 @@ function Home() {
       queryKey: ["upComming"],
       queryFn: getUpcomingMovie,
     });
-    return [latest, topRated, upComming];
+    return [nowPlaying, latest, topRated, upComming];
   };
   const [
+    { data: nowPlaying, isLoading: loadingNowPlaying },
     { data: latestMovie, isLoading: loadingLatest },
     { data: topRatedMovie, isLoading: loadingTopRated },
     { data: upCommingMovie, isLoading: loadingUpComming },
   ] = useMultipleQuery();
   const data = nowPlaying || latestMovie || topRatedMovie || upCommingMovie;
-  const isLoading = loadingLatest || loadingTopRated || loadingUpComming;
-  // const { data: latest, isLoading: latestLoading } = useQuery({
-  //   queryKey: ["movies", "latest"],
-  //   queryFn: getLatestMovie,
-  // });
-  // const { data: topRated, isLoading: topRatedLoading } =
-  //   useQuery<IGetMoviesResult>({
-  //     queryKey: ["movies", "topRated"],
-  //     queryFn: getTopRatedMovie,
-  //   });
-  // const { data: upcoming, isLoading: upComingLoading } =
-  //   useQuery<IGetMoviesResult>({
-  //     queryKey: ["movies", "upcoming"],
-  //     queryFn: getUpcomingMovie,
-  //   });
+  const isLoading =
+    loadingNowPlaying || loadingLatest || loadingTopRated || loadingUpComming;
+
+  const [index, setIndex] = useState(0);
   const onBoxClicked = (movieId: number) => {
     history(`movies/${movieId}`);
   };
