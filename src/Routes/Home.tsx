@@ -44,17 +44,17 @@ const Overview = styled.p`
   width: 50%;
 `;
 const Slider = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
   position: relative;
   top: -100px;
 `;
-const SliderItem = styled(motion.div)`
+const SliderRow = styled(motion.div)`
   position: relative;
 `;
-const Row = styled(motion.div)`
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(6, 1fr);
-  width: 100%;
+const Category = styled.h3`
+  font-size: 48px;
 `;
 const Box = styled(motion.div)<{ $bgphoto: string }>`
   background-color: white;
@@ -71,6 +71,18 @@ const Box = styled(motion.div)<{ $bgphoto: string }>`
   &:last-child {
     transform-origin: center right;
   }
+`;
+const Info = styled(motion.div)`
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  h4 {
+    text-align: center;
+    font-size: 18px;
+  }
+  padding: 10px;
+  opacity: 0;
+  background-color: ${(props) => props.theme.black.lighter};
 `;
 const Overlay = styled(motion.div)`
   position: fixed;
@@ -251,9 +263,14 @@ function Home() {
           </Banner>
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
-              <SliderItem key='nowPlaying'>
-                <h3>Now Playing</h3>
-                <Carousel responsive={responsive} showDots={true}>
+              <SliderRow key='nowPlaying'>
+                <Category>Now Playing</Category>
+                <Carousel
+                  responsive={responsive}
+                  showDots={true}
+                  containerClass='slider-container'
+                  itemClass='slider-item'
+                >
                   {nowPlaying?.results.slice(1).map((movie) => (
                     <Box
                       layoutId={movie.id + ""}
@@ -267,13 +284,22 @@ function Home() {
                         movie.backdrop_path || "",
                         "w500"
                       )}
-                    />
+                    >
+                      <Info variants={infoVariants}>
+                        <h4>{movie.title}</h4>
+                      </Info>
+                    </Box>
                   ))}
                 </Carousel>
-              </SliderItem>
-              <SliderItem key='topRated'>
-                <h3>Top Rated</h3>
-                <Carousel responsive={responsive} showDots={true}>
+              </SliderRow>
+              <SliderRow key='topRated'>
+                <Category>Top Rated</Category>
+                <Carousel
+                  responsive={responsive}
+                  showDots={true}
+                  containerClass='slider-container'
+                  itemClass='slider-item'
+                >
                   {topRatedMovie?.results.map((movie) => (
                     <Box
                       layoutId={movie.id + ""}
@@ -287,13 +313,22 @@ function Home() {
                         movie.backdrop_path || "",
                         "w500"
                       )}
-                    />
+                    >
+                      <Info variants={infoVariants}>
+                        <h4>{movie.title}</h4>
+                      </Info>
+                    </Box>
                   ))}
                 </Carousel>
-              </SliderItem>
-              <SliderItem key='upComming'>
-                <h3>Upcomming</h3>
-                <Carousel responsive={responsive} showDots={true}>
+              </SliderRow>
+              <SliderRow key='upComming'>
+                <Category>Upcomming</Category>
+                <Carousel
+                  responsive={responsive}
+                  showDots={true}
+                  containerClass='slider-container'
+                  itemClass='slider-item'
+                >
                   {upCommingMovie?.results.map((movie) => (
                     <Box
                       layoutId={movie.id + ""}
@@ -307,10 +342,14 @@ function Home() {
                         movie.backdrop_path || "",
                         "w500"
                       )}
-                    />
+                    >
+                      <Info variants={infoVariants}>
+                        <h4>{movie.title}</h4>
+                      </Info>
+                    </Box>
                   ))}
                 </Carousel>
-              </SliderItem>
+              </SliderRow>
             </AnimatePresence>
           </Slider>
           <AnimatePresence>
