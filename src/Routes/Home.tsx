@@ -11,7 +11,9 @@ import { makeImagePath } from "../utils";
 import { AnimatePresence, motion, useScroll } from "framer-motion";
 import { useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
-import Pagenation from "../Components/Pagenation";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Wrapper = styled.div`
   background: black;
@@ -44,6 +46,9 @@ const Overview = styled.p`
 const Slider = styled.div`
   position: relative;
   top: -100px;
+`;
+const SliderItem = styled(motion.div)`
+  position: relative;
 `;
 const Row = styled(motion.div)`
   display: grid;
@@ -204,10 +209,38 @@ function Home() {
       (movie) => movie.id === +bigMovieMatch.params.movieId!
     );
   console.log(clickedMovie);
+  // Multi Caroucel
+  const responsive = {
+    superLargeDesktop: {
+      breakpoint: { max: 4000, min: 3000 },
+      items: 6,
+      slidesToSlide: 6,
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 6,
+      slidesToSlide: 6,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 3,
+      slidesToSlide: 3,
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+      slidesToSlide: 1,
+    },
+  };
   return (
     <Wrapper>
       {isLoading ? (
-        <Loader>Loading...</Loader>
+        <ClipLoader
+          loading={isLoading}
+          size={150}
+          aria-label='Loading Spinner'
+          data-testid='loader'
+        ></ClipLoader>
       ) : (
         <>
           <Banner
@@ -218,127 +251,66 @@ function Home() {
           </Banner>
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
-              <motion.div key='nowPlaying'>
+              <SliderItem key='nowPlaying'>
                 <h3>Now Playing</h3>
-                <Row>
-                  {nowPlaying?.results
-                    .slice(1)
-                    .slice(offset * index, offset * index + offset)
-                    .map((movie) => (
-                      <Box
-                        layoutId={movie.id + ""}
-                        variants={boxVariants}
-                        whileHover='hover'
-                        initial='normal'
-                        onClick={() => onBoxClicked(movie.id)}
-                        transition={{ type: "tween" }}
-                        key={movie.id}
-                        $bgphoto={makeImagePath(
-                          movie.backdrop_path || "",
-                          "w500"
-                        )}
-                      />
-                    ))}
-                </Row>
-                <div
-                  style={{
-                    display: index === maxIndex ? "none" : "flex",
-                  }}
-                  className='next'
-                  key={index + "nowPlayingNext"}
-                  onClick={() => paginate(1)}
-                >
-                  {"‣"}
-                </div>
-                <div
-                  style={{ display: index === 0 ? "none" : "flex" }}
-                  className='prev'
-                  key={index + "nowPlayingPrev"}
-                  onClick={() => paginate(-1)}
-                >
-                  {"‣"}
-                </div>
-              </motion.div>
-              <motion.div key='topRated'>
+                <Carousel responsive={responsive} showDots={true}>
+                  {nowPlaying?.results.slice(1).map((movie) => (
+                    <Box
+                      layoutId={movie.id + ""}
+                      variants={boxVariants}
+                      whileHover='hover'
+                      initial='normal'
+                      onClick={() => onBoxClicked(movie.id)}
+                      transition={{ type: "tween" }}
+                      key={movie.id}
+                      $bgphoto={makeImagePath(
+                        movie.backdrop_path || "",
+                        "w500"
+                      )}
+                    />
+                  ))}
+                </Carousel>
+              </SliderItem>
+              <SliderItem key='topRated'>
                 <h3>Top Rated</h3>
-                <Row>
-                  {topRatedMovie?.results
-                    .slice(offset * index, offset * index + offset)
-                    .map((movie) => (
-                      <Box
-                        layoutId={movie.id + ""}
-                        variants={boxVariants}
-                        whileHover='hover'
-                        initial='normal'
-                        onClick={() => onBoxClicked(movie.id)}
-                        transition={{ type: "tween" }}
-                        key={movie.id}
-                        $bgphoto={makeImagePath(
-                          movie.backdrop_path || "",
-                          "w500"
-                        )}
-                      />
-                    ))}
-                </Row>
-                <div
-                  style={{
-                    display: index === maxIndex ? "none" : "flex",
-                  }}
-                  className='next'
-                  key={index + "nowPlayingNext"}
-                  onClick={() => paginate(1)}
-                >
-                  {"‣"}
-                </div>
-                <div
-                  style={{ display: index === 0 ? "none" : "flex" }}
-                  className='prev'
-                  key={index + "nowPlayingPrev"}
-                  onClick={() => paginate(-1)}
-                >
-                  {"‣"}
-                </div>
-              </motion.div>
-              <motion.div key='upComming'>
+                <Carousel responsive={responsive} showDots={true}>
+                  {topRatedMovie?.results.map((movie) => (
+                    <Box
+                      layoutId={movie.id + ""}
+                      variants={boxVariants}
+                      whileHover='hover'
+                      initial='normal'
+                      onClick={() => onBoxClicked(movie.id)}
+                      transition={{ type: "tween" }}
+                      key={movie.id}
+                      $bgphoto={makeImagePath(
+                        movie.backdrop_path || "",
+                        "w500"
+                      )}
+                    />
+                  ))}
+                </Carousel>
+              </SliderItem>
+              <SliderItem key='upComming'>
                 <h3>Upcomming</h3>
-                <Row>
-                  {upCommingMovie?.results
-                    .slice(offset * index, offset * index + offset)
-                    .map((movie) => (
-                      <Box
-                        layoutId={movie.id + ""}
-                        variants={boxVariants}
-                        whileHover='hover'
-                        initial='normal'
-                        onClick={() => onBoxClicked(movie.id)}
-                        transition={{ type: "tween" }}
-                        key={movie.id}
-                        $bgphoto={makeImagePath(
-                          movie.backdrop_path || "",
-                          "w500"
-                        )}
-                      />
-                    ))}
-                </Row>
-                <div
-                  style={{
-                    display: index === maxIndex ? "none" : "flex",
-                  }}
-                  className='next'
-                  key={index + "nowPlayingNext"}
-                  onClick={() => paginate(1)}
-                >
-                  {"‣"}
-                </div>
-                <div
-                  style={{ display: index === 0 ? "none" : "flex" }}
-                  className='prev'
-                  key={index + "nowPlayingPrev"}
-                  onClick={() => paginate(-1)}
-                >
-                  {"‣"}
-                </div>
-              </motion.div>
+                <Carousel responsive={responsive} showDots={true}>
+                  {upCommingMovie?.results.map((movie) => (
+                    <Box
+                      layoutId={movie.id + ""}
+                      variants={boxVariants}
+                      whileHover='hover'
+                      initial='normal'
+                      onClick={() => onBoxClicked(movie.id)}
+                      transition={{ type: "tween" }}
+                      key={movie.id}
+                      $bgphoto={makeImagePath(
+                        movie.backdrop_path || "",
+                        "w500"
+                      )}
+                    />
+                  ))}
+                </Carousel>
+              </SliderItem>
             </AnimatePresence>
           </Slider>
           <AnimatePresence>
