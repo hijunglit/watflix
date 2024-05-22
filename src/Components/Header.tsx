@@ -8,6 +8,8 @@ import {
 import { Link, useMatch, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { searchMovies } from "../api";
 
 const Nav = styled(motion.nav)`
   display: flex;

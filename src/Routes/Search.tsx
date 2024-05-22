@@ -1,4 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+  matchMutation,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IGetMoviesResult, searchMovies } from "../api";
 import styled from "styled-components";
@@ -21,12 +26,31 @@ const ResultsContainer = styled.div`
   gap: 15px;
 `;
 const ResultsItem = styled(motion.div)<{ $bgphoto: string }>`
-  backgroundcolor: white;
+  background-color: white;
   height: 200px;
   color: red;
   font-size: 66px;
   cursor: pointer;
   background-image: url(${(props) => props.$bgphoto});
+  background-position: center;
+  &:last-child {
+    transform-origin: center left;
+  }
+  &:last-child {
+    transform-origin: center right;
+  }
+`;
+const Info = styled(motion.div)`
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  h4 {
+    text-align: center;
+    font-size: 18px;
+  }
+  padding: 10px;
+  opacity: 0;
+  background-color: ${(props) => props.theme.black.lighter};
 `;
 
 const boxVariants = {
@@ -41,7 +65,18 @@ const boxVariants = {
   },
   normal: { scale: 1 },
 };
+const infoVariants = {
+  hover: {
+    opacity: 1,
+    transition: {
+      delay: 0.5,
+      duration: 0.1,
+      type: "tween",
+    },
+  },
+};
 function Search() {
+  const queryClient = useQueryClient();
   const history = useNavigate();
   const location = useLocation();
   const keyword = new URLSearchParams(location.search).get("keyword");
@@ -50,7 +85,8 @@ function Search() {
     queryKey: ["Search"],
     queryFn: () => searchMovies(keyword as string),
   });
-  console.log(movieResults);
+  queryClient.invalidateQueries({ queryKey: ["Search"] });
+
   const onBoxClicked = (movieId: number) => {
     history(`movies/${movieId}`);
   };
@@ -77,7 +113,11 @@ function Search() {
                 transition={{ type: "tween" }}
                 key={movie.id}
                 $bgphoto={makeImagePath(movie.backdrop_path || "", "w500")}
-              />
+              >
+                <Info variants={infoVariants}>
+                  <h4>{movie.title}</h4>
+                </Info>
+              </ResultsItem>
             ))}
           </ResultsContainer>
         </>
