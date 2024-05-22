@@ -186,41 +186,30 @@ function Home() {
   const data = nowPlaying || latestMovie || topRatedMovie || upCommingMovie;
   const isLoading =
     loadingNowPlaying || loadingLatest || loadingTopRated || loadingUpComming;
-
   const [index, setIndex] = useState(0);
   const onBoxClicked = (movieId: number) => {
     history(`movies/${movieId}`);
   };
   const totalMovies = nowPlaying!?.results.length - 1;
   const maxIndex = Math.floor(totalMovies / offset) - 1;
-  const paginate = (newDirection: number) => {
-    if (nowPlaying) {
-      if (leaving) return;
-      toggleLeaving();
-      setIndex((prev) =>
-        newDirection === 1
-          ? prev === maxIndex
-            ? 0
-            : prev + 1
-          : prev === 0
-          ? 0
-          : prev - 1
-      );
-    }
-  };
+
   const bigMovieMatch = useMatch(process.env.PUBLIC_URL + "/movies/:movieId");
-  console.log(bigMovieMatch);
   const { scrollY } = useScroll();
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onOverlayClick = () => history(process.env.PUBLIC_URL + "/");
   const clickedMovie =
     bigMovieMatch?.params.movieId &&
-    data?.results.find(
+    nowPlaying?.results.find(
       // https://velog.io/@adguy/TypeScript-possibly-undefined-value-%ED%95%B4%EA%B2%B0-%ED%95%98%EB%8A%94-%EB%B2%95
       (movie) => movie.id === +bigMovieMatch.params.movieId!
     );
-  console.log(clickedMovie);
+  const clickedTopRated =
+    bigMovieMatch?.params.movieId &&
+    topRatedMovie?.results.find(
+      // https://velog.io/@adguy/TypeScript-possibly-undefined-value-%ED%95%B4%EA%B2%B0-%ED%95%98%EB%8A%94-%EB%B2%95
+      (movie) => movie.id === +bigMovieMatch.params.movieId!
+    );
   // Multi Caroucel
   const responsive = {
     superLargeDesktop: {
@@ -354,7 +343,7 @@ function Home() {
           </Slider>
           <AnimatePresence>
             {bigMovieMatch ? (
-              <>
+              <div key='nowPlayingModal'>
                 <Overlay
                   onClick={onOverlayClick}
                   exit={{ opacity: 0 }}
@@ -379,7 +368,35 @@ function Home() {
                     </>
                   )}
                 </BigMovie>
-              </>
+              </div>
+            ) : null}
+            {bigMovieMatch ? (
+              <div key='topRatedModal'>
+                <Overlay
+                  onClick={onOverlayClick}
+                  exit={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                />
+                <BigMovie
+                  style={{ top: scrollY.get() + 100 }}
+                  layoutId={bigMovieMatch.params.movieId}
+                >
+                  {clickedTopRated && (
+                    <>
+                      <BigCover
+                        style={{
+                          backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
+                            clickedTopRated.backdrop_path,
+                            "w500"
+                          )})`,
+                        }}
+                      />
+                      <BigTitle>{clickedTopRated.title}</BigTitle>
+                      <BigOverview>{clickedTopRated.overview}</BigOverview>
+                    </>
+                  )}
+                </BigMovie>
+              </div>
             ) : null}
           </AnimatePresence>
         </>

@@ -85,6 +85,8 @@ function Search() {
     queryKey: ["Search"],
     queryFn: () => searchMovies(keyword as string),
   });
+  // react query: mutate 설명
+  // https://velog.io/@rookieand/react-query-%EC%9D%98-mutation%EC%97%90-%EB%8C%80%ED%95%B4-%EC%95%8C%EC%95%84%EB%B3%B4%EC%9E%90
   queryClient.invalidateQueries({ queryKey: ["Search"] });
 
   const onBoxClicked = (movieId: number) => {
