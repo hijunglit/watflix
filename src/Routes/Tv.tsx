@@ -279,6 +279,84 @@ function Tv() {
                   ))}
                 </Carousel>
               </SliderRow>
+              <SliderRow key='onTheAir'>
+                <Category style={{ fontSize: "48px" }}>On the air</Category>
+                <Carousel
+                  responsive={responsive}
+                  showDots={true}
+                  containerClass='slider-container'
+                  itemClass='slider-item'
+                >
+                  {onTheAir?.results.slice(1).map((tv) => (
+                    <Box
+                      layoutId={tv.id + ""}
+                      variants={boxVariants}
+                      whileHover='hover'
+                      initial='normal'
+                      onClick={() => onBoxClicked(tv.id)}
+                      transition={{ type: "tween" }}
+                      key={tv.id}
+                      $bgphoto={makeImagePath(tv.backdrop_path, "w500")}
+                    >
+                      <Info variants={infoVariants}>
+                        <h4>{tv.name}</h4>
+                      </Info>
+                    </Box>
+                  ))}
+                </Carousel>
+              </SliderRow>
+              <SliderRow key='popular'>
+                <Category style={{ fontSize: "48px" }}>Popular</Category>
+                <Carousel
+                  responsive={responsive}
+                  showDots={true}
+                  containerClass='slider-container'
+                  itemClass='slider-item'
+                >
+                  {popular?.results.slice(1).map((tv) => (
+                    <Box
+                      layoutId={tv.id + ""}
+                      variants={boxVariants}
+                      whileHover='hover'
+                      initial='normal'
+                      onClick={() => onBoxClicked(tv.id)}
+                      transition={{ type: "tween" }}
+                      key={tv.id}
+                      $bgphoto={makeImagePath(tv.backdrop_path, "w500")}
+                    >
+                      <Info variants={infoVariants}>
+                        <h4>{tv.name}</h4>
+                      </Info>
+                    </Box>
+                  ))}
+                </Carousel>
+              </SliderRow>
+              <SliderRow key='topRated'>
+                <Category style={{ fontSize: "48px" }}>Top rated</Category>
+                <Carousel
+                  responsive={responsive}
+                  showDots={true}
+                  containerClass='slider-container'
+                  itemClass='slider-item'
+                >
+                  {topRated?.results.slice(1).map((tv) => (
+                    <Box
+                      layoutId={tv.id + ""}
+                      variants={boxVariants}
+                      whileHover='hover'
+                      initial='normal'
+                      onClick={() => onBoxClicked(tv.id)}
+                      transition={{ type: "tween" }}
+                      key={tv.id}
+                      $bgphoto={makeImagePath(tv.backdrop_path, "w500")}
+                    >
+                      <Info variants={infoVariants}>
+                        <h4>{tv.name}</h4>
+                      </Info>
+                    </Box>
+                  ))}
+                </Carousel>
+              </SliderRow>
             </AnimatePresence>
           </Slider>
           <AnimatePresence>
