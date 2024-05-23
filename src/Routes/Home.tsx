@@ -192,7 +192,6 @@ function Home() {
     upCommingMovie?.results as any,
     latestMovie?.results as any
   );
-  console.log(allMovies);
   const [index, setIndex] = useState(0);
   const onBoxClicked = (movieId: number) => {
     history(`movies/${movieId}`);

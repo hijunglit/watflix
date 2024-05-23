@@ -11,7 +11,9 @@ function App() {
         <Route path={process.env.PUBLIC_URL + "/tv"} element={<Tv />}>
           <Route path={process.env.PUBLIC_URL + "/tv/:tvId"} element={<Tv />} />
         </Route>
-        <Route path={process.env.PUBLIC_URL + "/search"} element={<Search />} />
+        <Route path={process.env.PUBLIC_URL + "/search"} element={<Search />}>
+          <Route path={process.env.PUBLIC_URL + "/search/:id"} />
+        </Route>
         <Route path={process.env.PUBLIC_URL} element={<Home />}>
           <Route
             path={process.env.PUBLIC_URL + "/movies/:movieId"}
