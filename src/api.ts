@@ -5,6 +5,13 @@ interface IMovie {
     title: string;
     overview: string;
 }
+export interface IAllMovies {
+    id: number,
+    backdrop_path: string;
+    poster_path: string;
+    title: string;
+    overview: string;
+}
 export interface IGetMoviesResult {
     dates?: {
         maximum: string;

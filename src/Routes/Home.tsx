@@ -183,9 +183,16 @@ function Home() {
     { data: topRatedMovie, isLoading: loadingTopRated },
     { data: upCommingMovie, isLoading: loadingUpComming },
   ] = useMultipleQuery();
-  const data = nowPlaying || latestMovie || topRatedMovie || upCommingMovie;
+
   const isLoading =
     loadingNowPlaying || loadingLatest || loadingTopRated || loadingUpComming;
+
+  const allMovies = nowPlaying?.results.concat(
+    topRatedMovie?.results as any,
+    upCommingMovie?.results as any,
+    latestMovie?.results as any
+  );
+  console.log(allMovies);
   const [index, setIndex] = useState(0);
   const onBoxClicked = (movieId: number) => {
     history(`movies/${movieId}`);
@@ -200,13 +207,7 @@ function Home() {
   const onOverlayClick = () => history(process.env.PUBLIC_URL + "/");
   const clickedMovie =
     bigMovieMatch?.params.movieId &&
-    nowPlaying?.results.find(
-      // https://velog.io/@adguy/TypeScript-possibly-undefined-value-%ED%95%B4%EA%B2%B0-%ED%95%98%EB%8A%94-%EB%B2%95
-      (movie) => movie.id === +bigMovieMatch.params.movieId!
-    );
-  const clickedTopRated =
-    bigMovieMatch?.params.movieId &&
-    topRatedMovie?.results.find(
+    allMovies?.find(
       // https://velog.io/@adguy/TypeScript-possibly-undefined-value-%ED%95%B4%EA%B2%B0-%ED%95%98%EB%8A%94-%EB%B2%95
       (movie) => movie.id === +bigMovieMatch.params.movieId!
     );
@@ -365,34 +366,6 @@ function Home() {
                       />
                       <BigTitle>{clickedMovie.title}</BigTitle>
                       <BigOverview>{clickedMovie.overview}</BigOverview>
-                    </>
-                  )}
-                </BigMovie>
-              </div>
-            ) : null}
-            {bigMovieMatch ? (
-              <div key='topRatedModal'>
-                <Overlay
-                  onClick={onOverlayClick}
-                  exit={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                />
-                <BigMovie
-                  style={{ top: scrollY.get() + 100 }}
-                  layoutId={bigMovieMatch.params.movieId}
-                >
-                  {clickedTopRated && (
-                    <>
-                      <BigCover
-                        style={{
-                          backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
-                            clickedTopRated.backdrop_path,
-                            "w500"
-                          )})`,
-                        }}
-                      />
-                      <BigTitle>{clickedTopRated.title}</BigTitle>
-                      <BigOverview>{clickedTopRated.overview}</BigOverview>
                     </>
                   )}
                 </BigMovie>
