@@ -5,6 +5,13 @@ interface IMovie {
     title: string;
     overview: string;
 }
+interface ITv {
+    id: number,
+    backdrop_path: string;
+    poster_path: string;
+    name: string;
+    overview: string;
+}
 export interface IAllMovies {
     id: number,
     backdrop_path: string;
@@ -19,6 +26,16 @@ export interface IGetMoviesResult {
     }
     page: number;
     results: IMovie[];
+    total_pages: number;
+    total_results: number;
+}
+export interface IGetTvResult {
+    dates?: {
+        maximum: string;
+        minimum: string;
+    }
+    page: number;
+    results: ITv[];
     total_pages: number;
     total_results: number;
 }
@@ -55,10 +72,19 @@ export async function getLatestMovie() {
 export async function getPopularMovie() {
     return await fetch(`${BASE_PATH}/movie/popular?api_key=${API_KEY}`).then((response) => response.json());
 }
-
-export async function getTvs() {
-    return await fetch(`${BASE_PATH}/tv/airing_today?api_key=${API_KEY}`).then((response) => response.json());
-}
 export async function searchMovies(keyword: string) {
     return await fetch(`${BASE_PATH}/search/movie?query=${keyword}&api_key=${API_KEY}`).then((response) => response.json());
 }
+export async function getTvs() {
+    return await fetch(`${BASE_PATH}/tv/airing_today?api_key=${API_KEY}`).then((response) => response.json());
+}
+export async function getOnTheAirTvs() {
+    return await fetch(`${BASE_PATH}/tv/on_the_air?api_key=${API_KEY}`).then((response) => response.json());
+}
+export async function getPopularTvs() {
+    return await fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}`).then((response) => response.json());
+}
+export async function getTopRatedTvs() {
+    return await fetch(`${BASE_PATH}/tv/top_rated?api_key=${API_KEY}`).then((response) => response.json());
+}
+

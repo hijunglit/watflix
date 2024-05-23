@@ -192,12 +192,9 @@ function Home() {
     upCommingMovie?.results as any,
     latestMovie?.results as any
   );
-  const [index, setIndex] = useState(0);
   const onBoxClicked = (movieId: number) => {
     history(`movies/${movieId}`);
   };
-  const totalMovies = nowPlaying!?.results.length - 1;
-  const maxIndex = Math.floor(totalMovies / offset) - 1;
 
   const bigMovieMatch = useMatch(process.env.PUBLIC_URL + "/movies/:movieId");
   const { scrollY } = useScroll();
@@ -269,10 +266,7 @@ function Home() {
                       onClick={() => onBoxClicked(movie.id)}
                       transition={{ type: "tween" }}
                       key={movie.id}
-                      $bgphoto={makeImagePath(
-                        movie.backdrop_path || "",
-                        "w500"
-                      )}
+                      $bgphoto={makeImagePath(movie.backdrop_path, "w500")}
                     >
                       <Info variants={infoVariants}>
                         <h4>{movie.title}</h4>

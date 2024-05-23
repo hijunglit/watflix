@@ -1,10 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
-import { IGetTvsResult, getTvs } from "../api";
+import {
+  IGetMoviesResult,
+  IGetTvsResult,
+  getOnTheAirTvs,
+  getPopularTvs,
+  getTopRatedTvs,
+  getTvs,
+} from "../api";
 import styled from "styled-components";
 import { makeImagePath } from "../utils";
 import { AnimatePresence, motion, useScroll } from "framer-motion";
 import { useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
+import ClipLoader from "react-spinners/ClipLoader";
+import Carousel from "react-multi-carousel";
 
 const Wrapper = styled.div`
   background: black;
@@ -37,6 +46,12 @@ const Overview = styled.p`
 const Slider = styled.div`
   position: relative;
   top: -100px;
+`;
+const SliderRow = styled(motion.div)`
+  position: relative;
+`;
+const Category = styled.h3`
+  font-size: 48px;
 `;
 const Row = styled(motion.div)`
   display: grid;
@@ -145,73 +160,113 @@ const infoVariants = {
     },
   },
 };
-const offset = 6;
+// Multi Caroucel
+const responsive = {
+  superLargeDesktop: {
+    breakpoint: { max: 4000, min: 3000 },
+    items: 6,
+    slidesToSlide: 6,
+  },
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 6,
+    slidesToSlide: 6,
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 3,
+    slidesToSlide: 3,
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+    slidesToSlide: 1,
+  },
+};
 function Tv() {
   const history = useNavigate();
+  const useMultipleQuery = () => {
+    const airingToday = useQuery<IGetTvsResult>({
+      queryKey: ["airingToday"],
+      queryFn: getTvs,
+    });
+    const onTheAir = useQuery<IGetTvsResult>({
+      queryKey: ["onTheAir", "tv"],
+      queryFn: getOnTheAirTvs,
+    });
+    const popular = useQuery<IGetTvsResult>({
+      queryKey: ["popular", "tv"],
+      queryFn: getPopularTvs,
+    });
+    const topRated = useQuery<IGetTvsResult>({
+      queryKey: ["topRated", "tv"],
+      queryFn: getTopRatedTvs,
+    });
+    return [airingToday, onTheAir, popular, topRated];
+  };
+  const [
+    { data: airingToday, isLoading: loadingAiringToday },
+    { data: onTheAir, isLoading: loadingOnTheAir },
+    { data: popular, isLoading: loadingPopular },
+    { data: topRated, isLoading: loadingTopRated },
+  ] = useMultipleQuery();
+  const isLoading =
+    loadingAiringToday || loadingOnTheAir || loadingPopular || loadingTopRated;
+  const allTvs = airingToday?.results.concat(
+    onTheAir?.results as any,
+    popular?.results as any,
+    topRated?.results as any
+  );
   const { scrollY } = useScroll();
-  const { data: tvs, isLoading } = useQuery<IGetTvsResult>({
-    queryKey: ["tvs", "airingToday"],
-    queryFn: getTvs,
-  });
+  const [leaving, setLeaving] = useState(false);
+  const toggleLeaving = () => setLeaving((prev) => !prev);
 
   const bigTvMatch = useMatch(process.env.PUBLIC_URL + "/tv/:tvId");
   console.log(bigTvMatch);
-  const [index, setIndex] = useState(0);
-  const [leaving, setLeaving] = useState(false);
-  const increaseIndex = () => {
-    if (tvs) {
-      if (leaving) return;
-      toggleLeaving();
-      const totalMovies = tvs.results.length - 1;
-      const maxIndex = Math.floor(totalMovies / offset) - 1;
-      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
-    }
-  };
-  const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (tvId: number) => {
     history(`${process.env.PUBLIC_URL}/tv/${tvId}`);
   };
   const onOverlayClick = () => history(process.env.PUBLIC_URL + "/tv");
   const clickedTv =
     bigTvMatch?.params.tvId &&
-    tvs?.results.find(
-      // https://velog.io/@adguy/TypeScript-possibly-undefined-value-%ED%95%B4%EA%B2%B0-%ED%95%98%EB%8A%94-%EB%B2%95
-      (tv) => tv.id === +bigTvMatch.params.tvId!
-    );
-
+    allTvs?.find((tv) => tv.id === +bigTvMatch.params.tvId!);
+  console.log(clickedTv);
+  console.log(allTvs);
   return (
     <Wrapper>
       {isLoading ? (
-        <Loader>Loading...</Loader>
+        <ClipLoader
+          loading={isLoading}
+          size={150}
+          aria-label='Loading Spinner'
+          data-testid='loader'
+        ></ClipLoader>
       ) : (
         <>
           <Banner
-            onClick={increaseIndex}
-            $bgphoto={makeImagePath(tvs?.results[0].backdrop_path || "")}
+            $bgphoto={makeImagePath(
+              airingToday?.results[0].backdrop_path || ""
+            )}
           >
-            <Title>{tvs?.results[0].name}</Title>
-            <Overview>{tvs?.results[0].overview}</Overview>
+            <Title>{airingToday?.results[0].name}</Title>
+            <Overview>{airingToday?.results[0].overview}</Overview>
           </Banner>
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
-              <h3 style={{ fontSize: "48px" }}>Airing today</h3>
-              <Row
-                variants={rowVariants}
-                initial='hidden'
-                animate='visible'
-                exit='exit'
-                transition={{ type: "tween", duration: 1 }}
-                key={index}
-              >
-                {tvs?.results
-                  .slice(1)
-                  .slice(offset * index, offset * index + offset)
-                  .map((tv) => (
+              <SliderRow key='airingToday'>
+                <Category style={{ fontSize: "48px" }}>Airing today</Category>
+                <Carousel
+                  responsive={responsive}
+                  showDots={true}
+                  containerClass='slider-container'
+                  itemClass='slider-item'
+                >
+                  {airingToday?.results.slice(1).map((tv) => (
                     <Box
                       layoutId={tv.id + ""}
+                      variants={boxVariants}
                       whileHover='hover'
                       initial='normal'
-                      variants={boxVariants}
                       onClick={() => onBoxClicked(tv.id)}
                       transition={{ type: "tween" }}
                       key={tv.id}
@@ -222,7 +277,8 @@ function Tv() {
                       </Info>
                     </Box>
                   ))}
-              </Row>
+                </Carousel>
+              </SliderRow>
             </AnimatePresence>
           </Slider>
           <AnimatePresence>
