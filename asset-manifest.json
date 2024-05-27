@@ -1,13 +1,16 @@
 {
   "files": {
-    "main.css": "/watflix/static/css/main.f6a33d5b.css",
-    "main.js": "/watflix/static/js/main.f60b3303.js",
+    "main.css": "/watflix/static/css/main.be106f83.css",
+    "main.js": "/watflix/static/js/main.ea8e2bbe.js",
+    "static/media/revicons.eot": "/watflix/static/media/revicons.a77de540a38981833f9e.eot",
+    "static/media/revicons.ttf": "/watflix/static/media/revicons.57fd05d4ae650374c8de.ttf",
+    "static/media/revicons.woff": "/watflix/static/media/revicons.e8746a624ed098489406.woff",
     "index.html": "/watflix/index.html",
-    "main.f6a33d5b.css.map": "/watflix/static/css/main.f6a33d5b.css.map",
-    "main.f60b3303.js.map": "/watflix/static/js/main.f60b3303.js.map"
+    "main.be106f83.css.map": "/watflix/static/css/main.be106f83.css.map",
+    "main.ea8e2bbe.js.map": "/watflix/static/js/main.ea8e2bbe.js.map"
   },
   "entrypoints": [
-    "static/css/main.f6a33d5b.css",
-    "static/js/main.f60b3303.js"
+    "static/css/main.be106f83.css",
+    "static/js/main.ea8e2bbe.js"
   ]
 }
